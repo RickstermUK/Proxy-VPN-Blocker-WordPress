@@ -11,7 +11,7 @@
  * Plugin Name: Proxy & VPN Blocker
  * Plugin URI: https://pvb.ricksterm.net
  * description: Proxy & VPN Blocker. This plugin will prevent Proxies and VPN's accessing your site's login page or making comments on pages & posts using the Proxycheck.io API
- * Version: 1.7.1
+ * Version: 1.7.2
  * Author: RickstermUK
  * Author URI: https://profiles.wordpress.org/rickstermuk
  * License: GPLv2
@@ -20,8 +20,8 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-$version     = '1.7.1';
-$update_date = 'December 16th 2020';
+$version     = '1.7.2';
+$update_date = 'December 27th 2020';
 
 if ( version_compare( get_option( 'proxy_vpn_blocker_version' ), $version, '<' ) ) {
 	update_option( 'proxy_vpn_blocker_version', $version );

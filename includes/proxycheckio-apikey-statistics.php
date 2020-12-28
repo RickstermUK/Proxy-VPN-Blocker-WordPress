@@ -89,6 +89,9 @@ if ( ! empty( $get_api_key ) ) {
 		$html         .= '</div>';
 		$html         .= '<div class="pvbapiusageday">';
 		$usage_percent = ( $queries_today * 100 ) / $daily_limit;
+		if ( $usage_percent > 100 ) {
+			$usage_percent = 100;
+		}
 		$html         .= 'API Key Usage Today: ' . number_format( $queries_today ) . '/' . number_format( $daily_limit ) . ' Queries - ' . round( $usage_percent, 2 ) . '% of Total.';
 		$html         .= '<div class="pvbpercentbar">';
 		$html         .= '<div class="pvbpercentbarinner" style="width:' . $usage_percent . '%">';

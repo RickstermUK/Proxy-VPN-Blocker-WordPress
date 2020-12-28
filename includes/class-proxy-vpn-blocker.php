@@ -94,7 +94,7 @@ class proxy_vpn_blocker {
 	 * @since   1.0
 	 * @return  void
 	 */
-	public function __construct( $file = '', $version = '1.7.1' ) {
+	public function __construct( $file = '', $version = '1.7.2' ) {
 		$this->_version = $version;
 		$this->_token   = 'proxy_vpn_blocker';
 
@@ -229,7 +229,7 @@ class proxy_vpn_blocker {
 	 * @see proxy_vpn_blocker()
 	 * @return Main proxy_vpn_blocker instance
 	 */
-	public static function instance( $file = '', $version = '1.7.1' ) {
+	public static function instance( $file = '', $version = '1.7.2' ) {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self( $file, $version );
 		}

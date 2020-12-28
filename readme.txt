@@ -5,7 +5,7 @@ Donate link: https://pvb.ricksterm.net/donate
 Requires at least: 4.9
 Tested up to: 5.6
 Requires PHP: 5.6
-Stable tag: 1.7.1
+Stable tag: 1.7.2
 License: GPLv2
 
 Blocks Proxies, VPN's, select Countries, IP's, Ranges & ASN's accessing your site login or commenting on pages & posts using the proxycheck.io API.
@@ -90,6 +90,11 @@ Remember: If you ever have to do this, delete the disablepvb.txt file after you 
 5. Whitelist manipulation page. The blacklist page looks similar to this.
 
 == Changelog ==
+
+= 1.7.2 2020-12-27 =
+* Fix for potential errors and issues if your proxycheck API query allowance was exhausted.
+* Fix for UI issue with the percentage bar on the API Key Statistics page if queries are over 100% (Burst token in use or queries exhausted).
+* Added an option for Proxy & VPN Blocker to send an email to the defined WordPress Admin Email notifying you of a denied status message received from proxycheck.io when making an API Query. This is useful to see if you have gone over used queries or if you have been blocked due to exceeding per second request rate limits or you have been banned.
 
 = 1.7.1 2020-12-16 =
 * Fix for php error on some older/outdated php versions (7.0.xx, 7.1.xx, 7.2.xx).

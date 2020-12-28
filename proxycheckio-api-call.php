@@ -80,6 +80,36 @@ function proxycheck_function( $visitor_ip, $asn_check ) {
 
 		// Decode the JSON from proxycheck.io API.
 		$decoded_json = json_decode( wp_remote_retrieve_body( $response ) );
+
+		// Check if the JSON response is valid.
+		if ( ! isset( $decoded_json->$visitor_ip ) || isset( $decoded_json->status ) && 'denied' === $decoded_json->status || 'warning' === $decoded_json->status ) {
+			if ( 'on' === get_option( 'pvb_proxycheckio_Admin_Alert_Denied_Email' ) && ! get_transient( 'pvb_admin_email_denied_timeout_' . $decoded_json->status ) ) {
+				// Prepare an email to sent to admin.
+				$to       = get_option( 'admin_email' );
+				$subject  = 'Proxy & VPN Blocker: proxycheck.io API Status: ' . $decoded_json->status . ' on ' . home_url();
+				$message  = 'This is a courtesy message to tell you that Proxy & VPN Blocker on "' . home_url() . '" received the following status message from proxycheck.io when attempting to make a query to the API: ' . "\n\n";
+				$message .= 'Status: ' . $decoded_json->status . "\n";
+				$message .= 'Message: ' . $decoded_json->message . "\n\n";
+				$message .= 'As a result, Proxy & VPN Blocker is not currently protecting your website.' . "\n\n";
+				$message .= 'You can disable these emails by turning off "proxycheck.io \'denied\' status emails" in your site\'s Proxy & VPN Blocker Settings.';
+				wp_mail( $to, $subject, $message );
+
+				// Set a transient so this doesn't happen too many times.
+				set_transient( 'pvb_admin_email_denied_timeout_' . $decoded_json->status, 3 * HOUR_IN_SECONDS );
+			}
+			if ( 'denied' === $decoded_json->status ) {
+				// Return.
+				$array = array(
+					'no', // Undetected.
+					'null',
+					'null',
+					'null',
+					'null',
+				);
+				return $array;
+			}
+		}
+
 		// Check if the IP we're testing is a proxy server.
 		if ( 'yes' === $decoded_json->$visitor_ip->proxy ) {
 			// A proxy has been detected "1", return true and don't IP cache this.

@@ -34,6 +34,7 @@ $options = array(
 	'pvb_proxycheckio_whitelist_countries_select_box',
 	'pvb_proxycheckio_opt_redirect_url',
 	'pvb_proxycheckio_redirect_bad_visitor',
+	'pvb_proxycheckio_Admin_Alert_Denied_Email',
 );
 foreach ( $options as $option ) {
 	if ( get_option( $option ) ) {

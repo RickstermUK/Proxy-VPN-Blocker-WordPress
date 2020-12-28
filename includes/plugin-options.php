@@ -578,6 +578,13 @@ class Proxy_VPN_Blocker_Settings {
 					'default'     => '',
 				),
 				array(
+					'id'          => 'proxycheckio_Admin_Alert_Denied_Email',
+					'label'       => 'proxycheck.io \'denied\' status emails',
+					'description' => __( 'If proxycheck.io returns a \'denied\' status message when a query is made, PVB will send you an email containing the details. To avoid too many emails being sent, this will only happen again if 3hrs have passed and there is still a \'denied\' status message.', 'proxy-vpn-blocker' ),
+					'type'        => 'checkbox',
+					'default'     => '',
+				),
+				array(
 					'id'          => 'proxycheckio_current_key',
 					'label'       => 'Unique Settings Key',
 					'description' => __( 'Each time the settings are updated they are linked to a new unique key which ensures that "known good" cached IP\'s are rechecked again under the new settings.', 'proxy-vpn-blocker' ),
