@@ -76,7 +76,7 @@ class Proxy_VPN_Blocker_Settings {
 	 */
 	public function add_menu_item() {
 		$this->assets_url = esc_url( trailingslashit( plugins_url( 'proxy-vpn-blocker/assets/' ) ) );
-		add_menu_page( 'Proxy & VPN Blocker', 'PVB Settings', 'manage_options', $this->parent->_token . '_settings', array( $this, 'settings_page' ), esc_url( $this->assets_url ) . 'css/pvb.svg' );
+		add_menu_page( 'Proxy & VPN Blocker', 'PVB Settings', 'manage_options', $this->parent->_token . '_settings', array( $this, 'settings_page' ), esc_url( $this->assets_url ) . 'img/pvb.svg' );
 		add_submenu_page( $this->parent->_token . '_settings', 'Blacklist Editor', 'Blacklist Editor', 'manage_options', $this->parent->_token . '_blacklist', array( $this, 'ipblacklist_page' ) );
 		add_submenu_page( $this->parent->_token . '_settings', 'Whitelist Editor', 'Whitelist Editor', 'manage_options', $this->parent->_token . '_whitelist', array( $this, 'ipwhitelist_page' ) );
 		add_submenu_page( $this->parent->_token . '_settings', 'Statistics', 'API Key Statistics', 'manage_options', $this->parent->_token . '_statistics', array( $this, 'statistics_page' ) );
@@ -128,7 +128,7 @@ class Proxy_VPN_Blocker_Settings {
 		}
 
 		$settings['Standard']                 = array(
-			'title'       => __( 'Important Settings', 'proxy-vpn-blocker' ),
+			'title'       => __( 'Main', 'proxy-vpn-blocker' ),
 			'description' => __( 'Please configure these settings.', 'proxy-vpn-blocker' ),
 			'fields'      => array(
 				array(
@@ -170,13 +170,13 @@ class Proxy_VPN_Blocker_Settings {
 			),
 		);
 		$settings['RestrictPagePost']         = array(
-			'title'       => __( 'Restrict on specific Pages & Posts', 'proxy-vpn-blocker' ),
+			'title'       => __( 'Restrict Pages/Posts', 'proxy-vpn-blocker' ),
 			'description' => __( 'Here you can select specific pages & posts that you don\'t want Proxies & VPN\'s to access.', 'proxy-vpn-blocker' ),
 			'fields'      => array(
 				array(
 					'id'          => 'proxycheckio_blocked_select_pages_field',
 					'label'       => __( 'Restrict on Specific Pages', 'proxy-vpn-blocker' ),
-					'description' => __( 'You can block on specific pages by adding them in this list. Try typing to search...<p class="note">Note: Selecting a page here WILL turn off \'Block on All Pages\' option.</p><p class="note">Note: Using this with a Cache Plugin may not work unless you set your Cache Plugin to not cache these pages.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'You can block on specific pages by adding them in this list. Try typing to search...<p class="note"><i class="fas fa-exclamation-circle"></i> Selecting a page here WILL turn off \'Block on All Pages\' option.</p><p class="note"><i class="fas fa-exclamation-circle"></i> Using this with a Cache Plugin may not work unless you set your Cache Plugin to not cache these pages.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'select_pages_multi',
 					'options'     => $pages_array,
 					'placeholder' => __( 'Select a list of pages...', 'proxy-vpn-blocker' ),
@@ -184,7 +184,7 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_blocked_select_posts_field',
 					'label'       => __( 'Restrict on Specific Posts', 'proxy-vpn-blocker' ),
-					'description' => __( 'You can block on specific postss by adding them in this list. Try typing to search...<p class="note">Note: Selecting a post here WILL turn off \'Block on All Pages\' option.</p><p class="note">Note: Using this with a Cache Plugin may not work unless you set your Cache Plugin to not cache these posts.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'You can block on specific postss by adding them in this list. Try typing to search...<p class="note"><i class="fas fa-exclamation-circle"></i> Selecting a post here WILL turn off \'Block on All Pages\' option.</p><p class="note"><i class="fas fa-exclamation-circle"></i> Using this with a Cache Plugin may not work unless you set your Cache Plugin to not cache these posts.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'select_pages_multi',
 					'options'     => $posts_array,
 					'placeholder' => __( 'Select a list of posts...', 'proxy-vpn-blocker' ),
@@ -192,8 +192,8 @@ class Proxy_VPN_Blocker_Settings {
 			),
 		);
 		$settings['BlockedVisitorAction']     = array(
-			'title'       => __( 'Blocked Visitor Action', 'proxy-vpn-blocker' ),
-			'description' => __( 'Here you can configure the action you want Proxy & VPN Blocker to take upon positive detection of Proxy/VPN.', 'proxy-vpn-blocker' ),
+			'title'       => __( 'Block Action', 'proxy-vpn-blocker' ),
+			'description' => __( 'Here you can configure the action you want Proxy & VPN Blocker to take upon positive detection of Proxy/VPN (Countries/Continents).', 'proxy-vpn-blocker' ),
 			'fields'      => array(
 				array(
 					'id'          => 'proxycheckio_denied_access_field',
@@ -206,7 +206,7 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_custom_blocked_page',
 					'label'       => __( 'Custom Blocked Page', 'proxy-vpn-blocker' ),
-					'description' => __( 'You can select a page to use as the blocked page from this list. <p class="note">Note: You cannot select a page here that already exists in your "Restrict on Specific Pages" List.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'You can select a page to use as the blocked page from this list. <p class="note"><i class="fas fa-exclamation-circle"></i> You cannot select a page here that already exists in your "Restrict on Specific Pages" List.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'select_page_single',
 					'options'     => $custom_page_array,
 					'placeholder' => __( 'Select a specific page...', 'proxy-vpn-blocker' ),
@@ -214,7 +214,7 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_redirect_bad_visitor',
 					'label'       => __( 'Redirect to URL', 'proxy-vpn-blocker' ),
-					'description' => __( 'Set this to \'on\' to enable redirection of detected bad visitors to a set URL in the below box <p class="note">Note: Turning this on will disable a set custom block page above, you cannot use both.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'Set this to \'on\' to enable redirection of detected bad visitors to a set URL in the below box <p class="note"><i class="fas fa-exclamation-circle"></i> Turning this on will disable a set custom block page above, you cannot use both.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'checkbox',
 					'default'     => '',
 				),
@@ -228,28 +228,14 @@ class Proxy_VPN_Blocker_Settings {
 				),
 			),
 		);
-		$settings['DaysSelector']             = array(
-			'title'       => __( 'Proxy/VPN Activity - Last Detected', 'proxy-vpn-blocker' ),
-			'description' => __( 'You can refine how strict you want detection to be. By default an IP is checked for nefarious activity detected within the last 7 days (recommended).', 'proxy-vpn-blocker' ),
-			'fields'      => array(
-				array(
-					'id'          => 'proxycheckio_Days_Selector',
-					'label'       => __( 'Last Detected Within', 'proxy-vpn-blocker' ),
-					'description' => __( 'You can set this from 1 to 60 days depending on how strict you want the detection to be. 1 day would be very liberal, 60 days would be very strict.', 'proxy-vpn-blocker' ),
-					'type'        => 'textslider',
-					'default'     => '7',
-					'placeholder' => __( '7', 'proxy-vpn-blocker' ),
-				),
-			),
-		);
 		$settings['RiskScore']                = array(
-			'title'       => __( 'IP Risk Score Checking', 'proxy-vpn-blocker' ),
+			'title'       => __( 'Risk Scores', 'proxy-vpn-blocker' ),
 			'description' => __( 'You can optionally opt to use IP Risk Score Checking.', 'proxy-vpn-blocker' ),
 			'fields'      => array(
 				array(
 					'id'          => 'proxycheckio_risk_select_box',
 					'label'       => __( 'Risk Score Checking', 'proxy-vpn-blocker' ),
-					'description' => __( 'Set this to \'on\' to enable the proxycheck.io Risk Score feature. <p class="note">Note: When using this feature your proxycheck.io positive detection log may not reflect what has actually been blocked by this plugin because they would still be positively detected, but the action will be taken by Proxy & VPN Blocker based on the IP Risk Score.</p><p class="note">Note: IP\'s allowed through with the risk score feature are not cached as Known Good IP\'s.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'Set this to \'on\' to enable the proxycheck.io Risk Score feature. <p class="note"><i class="fas fa-exclamation-circle"></i> When using this feature your proxycheck.io positive detection log may not reflect what has actually been blocked by this plugin because they would still be positively detected, but the action will be taken by Proxy & VPN Blocker based on the IP Risk Score.</p><p class="note"><i class="fas fa-exclamation-circle"></i>  IP\'s allowed through with the risk score feature are not cached as Known Good IP\'s.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'checkbox',
 					'default'     => '',
 				),
@@ -264,21 +250,21 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_max_riskscore_vpn',
 					'label'       => __( 'Risk Score - VPN\'s', 'proxy-vpn-blocker' ),
-					'description' => __( 'If detecting VPN\'s and Risk Score checking is enabled, any VPN with a Risk Score equal to or higher than the value set here will be blocked and if the risk score is lower they will be allowed. - Default value is 33', 'proxy-vpn-blocker' ),
+					'description' => __( 'If detecting VPN\'s and Risk Score checking is enabled, any VPN with a Risk Score equal to or higher than the value set here will be blocked and if the risk score is lower they will be allowed. - Default value is 66', 'proxy-vpn-blocker' ),
 					'type'        => 'textslider-riskscore-vpn',
-					'default'     => '33',
-					'placeholder' => __( '33', 'proxy-vpn-blocker' ),
+					'default'     => '66',
+					'placeholder' => __( '66', 'proxy-vpn-blocker' ),
 				),
 			),
 		);
 		$settings['BlockCountriesContinents'] = array(
-			'title'       => __( 'Blacklist or Whitelist Countries/Continents', 'proxy-vpn-blocker' ),
+			'title'       => __( 'Restrict Country/Continent', 'proxy-vpn-blocker' ),
 			'description' => __( 'By Default this is Blacklist of Countries/Continents thet you do not want to access protected parts of this site, You can opt to make this a Country/Continent Whitelist if you only want to allow a select few countries. IP\'s detected as Proxies/VPN\'s from Whitelisted Countries will still be blocked.', 'proxy-vpn-blocker' ),
 			'fields'      => array(
 				array(
 					'id'          => 'proxycheckio_blocked_countries_field',
 					'label'       => __( 'Country/Continent', 'proxy-vpn-blocker' ),
-					'description' => __( 'You can block specific Countries & Continents by adding them in this list. You can opt to make this a Whitelist below and then only the selected Countries/Continents will be allowed through. <p class="note">Note: This is not affected by IP Risk Score Checking options.</p><p class="note">Note: IP\'s that are not detected as bad by the proxycheck.io API but are blocked due to your settings here will not show up in your detections log. If you require this information then it is recommended that you use the Rules Feature of proxycheck.io instead of this.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'You can block specific Countries & Continents by adding them in this list. You can opt to make this a Whitelist below and then only the selected Countries/Continents will be allowed through. <p class="note"><i class="fas fa-exclamation-circle"></i> This is not affected by IP Risk Score Checking options.</p><p class="note"><i class="fas fa-exclamation-circle"></i> IP\'s that are not detected as bad by the proxycheck.io API but are blocked due to your settings here will not show up in your detections log. If you require this information then it is recommended that you use the Rules Feature of proxycheck.io instead of this.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'select_country_multi',
 					'options'     => array(
 						'Africa'                           => 'Africa',
@@ -544,20 +530,20 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_whitelist_countries_select_box',
 					'label'       => __( 'Treat Country/Continent List as a Whitelist', 'proxy-vpn-blocker' ),
-					'description' => __( 'If this is turned \'on\' then the Countries/Continents selected above will be Whitelisted instead of Blacklisted, all other countries will be blocked. <p class="warning">WARNING: This Could Be Your Own Country/Continent! You would have to add your own Country or Continent or you WILL get blocked from logging in. Please see the FAQ for instructions on how to fix this if it happens!</p><p class="note">Note: Bad IP\'s from whitelisted Countries/Continents will still be blocked!</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'If this is turned \'on\' then the Countries/Continents selected above will be Whitelisted instead of Blacklisted, all other countries will be blocked. <p class="warning"><i class="fas fa-exclamation-triangle"></i> This Could Be Your Own Country/Continent! You would have to add your own Country or Continent or you WILL get blocked from logging in. Please see the FAQ for instructions on how to fix this if it happens!</p><p class="note"><i class="fas fa-exclamation-circle"></i> Bad IP\'s from whitelisted Countries/Continents will still be blocked!</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'checkbox',
 					'default'     => '',
 				),
 			),
 		);
 		$settings['Advanced']                 = array(
-			'title'       => __( 'Advanced Settings', 'proxy-vpn-blocker' ),
-			'description' => __( 'These are advanced settings that are not generally recommended, or have been added on request', 'proxy-vpn-blocker' ),
+			'title'       => __( 'Advanced', 'proxy-vpn-blocker' ),
+			'description' => __( 'These are Advanced Settings that are not generally recommended, or have been added on request. ', 'proxy-vpn-blocker' ),
 			'fields'      => array(
 				array(
 					'id'          => 'proxycheckio_Custom_TAG_field',
 					'label'       => __( 'Custom Tag', 'proxy-vpn-blocker' ),
-					'description' => __( 'By default the tag used is siteurl.com/path/to/page-accessed, however you can supply your own descriptive tag. return to default by leaving this empty.', 'proxy-vpn-blocker' ),
+					'description' => __( 'By default the tag used is siteurl.com/path/to/page-accessed, however you can supply your own descriptive tag. return to default by leaving this empty. <p class="note"><i class="fas fa-exclamation-circle"></i> You can enter \'0\' in this box to disable tagging completely if you want queries to be private.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'text',
 					'default'     => '',
 					'placeholder' => __( 'Custom Tag', 'proxy-vpn-blocker' ),
@@ -571,9 +557,17 @@ class Proxy_VPN_Blocker_Settings {
 					'placeholder' => __( '30', 'proxy-vpn-blocker' ),
 				),
 				array(
+					'id'          => 'proxycheckio_Days_Selector',
+					'label'       => __( 'Last Detected Within', 'proxy-vpn-blocker' ),
+					'description' => __( 'You can set this from 1 to 60 days depending on how strict you want the detection to be. 1 day would be very liberal, 60 days would be very strict.', 'proxy-vpn-blocker' ),
+					'type'        => 'textslider',
+					'default'     => '7',
+					'placeholder' => __( '7', 'proxy-vpn-blocker' ),
+				),
+				array(
 					'id'          => 'proxycheckio_all_pages_activation',
 					'label'       => __( 'Block on entire site', 'proxy-vpn-blocker' ),
-					'description' => __( 'Set this to \'on\' to block Proxies/VPN\'s on every page of your website. This is at the expense of higher query usage and is NOT generally recommended.<p class="note">Note: This will not work if you are using a caching plugin. This will also not turn on if you have any pages and/or posts selected above. Please see FAQ.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'Set this to \'on\' to block Proxies/VPN\'s on every page of your website. This is at the expense of higher query usage and is NOT generally recommended.<p class="note"><i class="fas fa-exclamation-circle"></i> This will not work if you are using a caching plugin. This will also not turn on if you have any pages and/or posts selected on the "Restrict Posts/Pages" Tab. Please see FAQ.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'checkbox',
 					'default'     => '',
 				),
@@ -587,7 +581,7 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_current_key',
 					'label'       => 'Unique Settings Key',
-					'description' => __( 'Each time the settings are updated they are linked to a new unique key which ensures that "known good" cached IP\'s are rechecked again under the new settings.', 'proxy-vpn-blocker' ),
+					'description' => 'Each time the settings are saved, A unique ID is also saved, this ensures that previously cached "Known Good" IP\'s are re-checked under the new settings, instead of waiting until the cache for that IP expires.',
 					'placeholder' => '',
 					'type'        => 'hidden_key_field',
 				),
@@ -596,6 +590,7 @@ class Proxy_VPN_Blocker_Settings {
 		$settings = apply_filters( 'plugin_settings_fields', $settings );
 		return $settings;
 	}
+
 	/**
 	 * Register Proxy & VPN Blocker Settings.
 	 *
@@ -606,15 +601,19 @@ class Proxy_VPN_Blocker_Settings {
 			foreach ( $this->settings as $section => $data ) {
 				// Add section to page.
 				add_settings_section( $section, $data['title'], array( $this, 'settings_section' ), $this->parent->_token . '_settings' );
+
 				foreach ( $data['fields'] as $field ) {
+
 					// Validation callback for field.
 					$validation = '';
 					if ( isset( $field['callback'] ) ) {
 						$validation = $field['callback'];
 					}
+
 					// Register field.
 					$option_name = $this->base . $field['id'];
 					register_setting( $this->parent->_token . '_settings', $option_name, $validation );
+
 					// Add field to page.
 					add_settings_field(
 						$field['id'],
@@ -637,21 +636,84 @@ class Proxy_VPN_Blocker_Settings {
 	 * @param  string $section Settings Section.
 	 */
 	public function settings_section( $section ) {
-		$html = '<p> ' . $this->settings[ $section['id'] ]['description'] . '</p>' . "\n";
-		echo $html;
+		echo '<h3> ' . $this->settings[ $section['id'] ]['description'] . '</h3>' . "\n";
 	}
 
 	/**
-	 * Validate individual settings field.
+	 * Custom function for settings page.
 	 *
-	 * @param  string $data Inputted value.
-	 * @return string       Validated value
+	 * @param  string $page Settings Page.
 	 */
-	public function validate_field( $data ) {
-		if ( $data && strlen( $data ) > 0 && '' !== $data ) {
-			$data = rawurlencode( strtolower( str_replace( ' ', '-', $data ) ) );
+	public function pvb_do_settings_sections( $page ) {
+		global $wp_settings_sections, $wp_settings_fields;
+
+		if ( isset( $_GET['settings-updated'] ) ) {
+			echo '<div id="pvbshow" class="pvbsuccess">Settings Updated</div>' . "\n";
 		}
-		return $data;
+		if ( ! isset( $wp_settings_sections ) || ! isset( $wp_settings_sections[ $page ] ) ) {
+			return;
+		}
+		echo '<div id="pvb-settings-tabs">' . "\n";
+		echo '	<ul class="nav-tab-wrapper">' . "\n";
+		foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
+			echo '	<li class="tabz" data-tab="tab-' . $section['id'] . '">' . "\n";
+			echo '		<a class="tab-text">' . $section['title'] . '</a>' . "\n";
+			echo '	</li>' . "\n";
+		}
+		echo '	</ul>' . "\n";
+		echo '<div class="tabs-content">' . "\n";
+		foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
+			if ( ! isset( $wp_settings_fields ) || ! isset( $wp_settings_fields[ $page ] ) || ! isset( $wp_settings_fields[ $page ][ $section['id'] ] ) ) {
+				continue;
+			}
+			echo '	<div class="pvboptionswrap" id="tab-' . $section['id'] . '">' . "\n";
+			call_user_func( $section['callback'], $section );
+			echo '<div class="settings-form-wrapper">' . "\n";
+			$this->pvb_do_settings_fields( $page, $section['id'] );
+			echo '	</div>' . "\n";
+			echo '		<input name="Submit" type="submit" class="pvbdefault" value="' . esc_attr( __( 'Save Settings', 'proxy-vpn-blocker' ) ) . '" />' . "\n";
+			echo '	</div>' . "\n";
+		}
+		echo '</div>' . "\n";
+		echo '</div>' . "\n";
+	}
+
+	/**
+	 * Custom Settings Fields.
+	 *
+	 * @param  string $page Settings Page.
+	 * @param  string $section Settings Section.
+	 */
+	public function pvb_do_settings_fields( $page, $section ) {
+		global $wp_settings_fields;
+
+		if ( ! isset( $wp_settings_fields ) ||
+			! isset( $wp_settings_fields[ $page ] ) ||
+			! isset( $wp_settings_fields[ $page ][ $section ] ) ) {
+			return;
+		}
+		foreach ( (array) $wp_settings_fields[ $page ][ $section ] as $field ) {
+			echo '<div class="pvb_settingssection_container">' . "\n";
+			if ( ! empty( $field[ 'args' ]['label_for']) ) {
+				echo '<div class="pvb_settingsform_row">' . "\n";
+				echo '	<div class="pvb_settingsform_left box">' . "\n";
+				echo '		<p><label for="' . $field['args']['label_for'] . '">' . $field['title'] . '</label><br />' . "\n";
+				echo '	</div>' . "\n";
+				echo '	<div class="pvb_settingsform_right">' . "\n";
+				echo '	</div>' . "\n";
+				echo '</div>' . "\n";
+			} else {
+				echo '<div class="pvb_settingsform_row">' . "\n";
+				echo '	<div class="pvb_settingsform_left box">' . "\n";
+				echo '		<h3>' . $field['title'] . '</h3>' . "\n";
+				echo '	</div>' . "\n";
+				echo '	<div class="pvb_settingsform_right">' . "\n";
+					call_user_func( $field['callback'], $field['args'] ) . "\n";
+				echo '	</div>' . "\n";
+				echo '</div>' . "\n";
+			}
+			echo '</div>' . "\n";
+		}
 	}
 
 	/**
@@ -678,41 +740,66 @@ class Proxy_VPN_Blocker_Settings {
 		}
 		// Build page HTML.
 		$html  = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
-		$html .= '<h1>' . __( 'Proxy &amp; VPN Blocker Settings', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
-		if ( ! isset( $_COOKIE['pvb-hide-donation-div'] ) ) {
-			$html .= '<div class="pvbdonationsoffer" id="pvbdonationhide">
-                    <h3>Donation Offer:</h3>
-						<p>In agreement with <a href="https://proxycheck.io" target="_blank">proxycheck.io</a> this plugin is able to offer you a promotional discount on <u>one year</u> of the 10K daily queries, or 20K Queries plans as a big thank you for a donation to this plugin. Please check out the following link for current donation offer pricing!</p>
-						<div class="pvbdonationslinks">
-                            <a href="https://pvb.ricksterm.net/plan-donate/" target="_blank"><button class="pvbdefault">Donate</button></a><button class="pvbdismiss" id="pvbdonationclosebutton">Dismiss</button>
-                        </div>
-                    </div>' . "\n";
+		$html .= '<h2 class="pvb-wp-notice-fix"></h2>' . "\n";
+		if ( ! isset( $_COOKIE['pvb-hide-donate-div'] ) ) {
+			$html .= '<div class="pvbdonationsoffer" id="pvbdonationhide">' . "\n";
+			$html .= '	<div class="pvbdonationtext">' . "\n";
+			$html .= '		<h3>Proxy & VPN Blocker Donation Offer:</h3>' . "\n";
+			$html .= '		<p>Get a proxycheck.io starter or pro plan via Proxy & VPN Blocker\'s website at a 20% promotional discount. This is a donation perk and 100% of the money paid for your plan goes to the Plugin developer, while you get to enjoy the full benefits of a proxycheck.io paid plan.</p>' . "\n";
+			$html .= '		<p>Please check out Proxy & VPN Blocker\'s exclusive page which lists the discounted plan prices. We accept Paypal and various Crypto Currencies.</p>' . "\n";
+			$html .= '		<p>It is important to note that Proxy & VPN Blocker is not made by proxycheck.io and support isn\'t provided by them with configuration, or the functionality of this Plugin.</p>' . "\n";
+			$html .= '		<p>Thank you for your support!</p>' . "\n";
+			$html .= '	</div>' . "\n";
+			$html .= '	<div class="pvbdonationright">' . "\n";
+			$html .= '		<button class="pvbdonatedismiss" id="pvbdonationclosebutton" title="close"><i class="fas fa-times-circle"></i></button>' . "\n";
+			$html .= '		<div class="pvbdonationbutton">' . "\n";
+			$html .= '			<a href="https://pvb.ricksterm.net/plan-donate/" target="_blank"><button class="pvbdonate">Check Plan Pricing</button></a>' . "\n";
+			$html .= '		</div>' . "\n";
+			$html .= '	</div>' . "\n";
+			$html .= '</div>' . "\n";
 		}
-			$html .= '<div class="pvbinfowrap">' . "\n";
-			$html .= '<div class="pvbinfowrapleft"><div class="pvbinfowraplogoinside"></div></div>' . "\n";
-			$html .= '<div class="pvbinfowraptext">' . "\n";
-			$html .= '<h1>' . __( 'Welcome to Proxy &amp; VPN Blocker', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
-			$html .= '<p>' . __( 'Without an API Key you don\'t have access to statistics and most features of <a href="https://proxycheck.io" target="_blank">proxycheck.io</a>. You are also limited to 100 daily queries.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
-			$html .= '<p>' . __( 'It is suggested that you sign up with proxycheck.io for your free API Key which has 1,000 Daily Queries and full access to all features. Paid higher query tiers are also available and are recommended for large sites.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
-			$html .= '<p>' . __( 'Also check out the <a href="https://pvb.ricksterm.net/" target="_blank">Proxy & VPN Blocker</a> Website.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
-			$html .= '<p>' . __( 'Please enter your proxycheck.io API key in the settings below to enable full functionality of Proxy &amp; VPN Blocker.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
-			$html .= '</div>' . "\n";
-			$html .= '</div>' . "\n";
-			$html .= '<div class="pvboptionswrap">' . "\n";
-			$html .= '<form method="post" id="pvb-options-form" class="pvb" action="options.php" enctype="multipart/form-data">' . '</p>' . "\n";
-				// Get settings fields.
-				ob_start();
-				settings_fields( $this->parent->_token . '_settings' );
-				do_settings_sections( $this->parent->_token . '_settings' );
-			$html .= ob_get_clean();
-			$html .= '<p class="submit">' . "\n";
-			$html .= '<input type="hidden" name="tab" value="" />' . "\n";
-			$html .= '<input name="Submit" type="submit" class="pvbdefault" value="' . __( 'Save Settings', 'proxy-vpn-blocker' ) . '" />' . "\n";
-			$html .= '</p>' . "\n";
-			$html .= '</form>' . "\n";
-			$html .= '</div>' . "\n";
-			$html .= '</div>' . "\n";
-			echo $html;
+		if ( empty( get_option( 'pvb_proxycheckio_API_Key_field' ) ) ) {
+			if ( ! isset( $_COOKIE['pvb-hide-info-div'] ) ) {
+				$html .= '<div class="pvbinfowrap">' . "\n";
+				$html .= '	<div class="pvbinfowrapleft">' . "\n";
+				$html .= '		<div class="pvbinfowraplogoinside">' . "\n";
+				$html .= '		</div>' . "\n";
+				$html .= '	</div>' . "\n";
+				$html .= '	<div class="pvbinfowrapright">' . "\n";
+				$html .= '		<button class="pvbinfodismiss" id="pvbinfoclosebutton" title="close"><i class="fas fa-times-circle"></i></button>' . "\n";
+				$html .= '		<div class="pvbinfowraptext">' . "\n";
+				$html .= '			<h1>' . __( 'Welcome to Proxy &amp; VPN Blocker', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
+				$html .= '			<p>' . __( 'Without an API Key you don\'t have access to statistics and most features of <a href="https://proxycheck.io" target="_blank">proxycheck.io</a>. You are also limited to 100 daily queries.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
+				$html .= '			<p>' . __( 'It is suggested that you sign up with proxycheck.io for your free API Key which has 1,000 daily queries and full access to all features. Paid higher query tiers are also available and are recommended for large sites.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
+				$html .= '			<p>' . __( 'Please enter your proxycheck.io API key under \'Main\' to enable full functionality of Proxy &amp; VPN Blocker.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
+				$html .= '		</div>' . "\n";
+				$html .= '	</div>' . "\n";
+				$html .= '</div>' . "\n";
+			}
+		}
+		$html .= '<nav>' . "\n";
+		$html .= '	<input type="checkbox" id="checkbox" />' . "\n";
+		$html .= '	<label for="checkbox">' . "\n";
+		$html .= '  	<ul class="menu first">' . "\n";
+		$html .= '			<li><a href="https://pvb.ricksterm.net" target="_blank"><i class="fas fa-external-link-alt"></i> PVB Website</a></li>' . "\n";
+		$html .= '			<li><a href="https://wordpress.org/support/plugin/proxy-vpn-blocker/" target="_blank"><i class="fab fa-wordpress"></i> Support & Issues</a></li>' . "\n";
+		$html .= '			<li><a href="https://pvb.ricksterm.net/installationandconfiguration/" target="_blank"><i class="far fa-question-circle"></i> Configuration Guide</a></li>' . "\n";
+		$html .= '			<li><a href="https://pvb.ricksterm.net/faq/" target="_blank"><i class="far fa-file-alt"></i> FAQ</a></li>' . "\n";
+		$html .= '			<li id="donate"><a href="https://pvb.ricksterm.net/donate/" target="_blank"><i class="fas fa-donate"></i> Donate</a></li>' . "\n";
+		$html .= ' 	 	</ul>' . "\n";
+		$html .= '	  <span class="toggle"><i class="fas fa-bars"></i></span>' . "\n";
+		$html .= '	</label>' . "\n";
+		$html .= '</nav>' . "\n";
+
+		$html .= '<form method="post" id="pvb-options-form" class="pvb" action="options.php" enctype="multipart/form-data">' . "\n";
+			// Get settings fields.
+			ob_start();
+			settings_fields( $this->parent->_token . '_settings' );
+			$this->pvb_do_settings_sections( $this->parent->_token . '_settings' );
+		$html .= ob_get_clean();
+		$html .= '</form>' . "\n";
+		$html .= '</div>' . "\n";
+		echo $html;
 	}
 
 	/**

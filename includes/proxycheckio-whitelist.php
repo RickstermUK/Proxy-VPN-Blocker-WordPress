@@ -6,55 +6,61 @@
  */
 
 $allowed_html = array(
-	'div'    => array(
+	'div'     => array(
 		'class' => array(),
 		'id'    => array(),
 		'style' => array(),
 	),
-	'a'      => array(
+	'a'       => array(
 		'href'  => array(),
 		'title' => array(),
 	),
-	'script' => array(
+	'i'       => array(
+		'class' => array(),
+	),
+	'script'  => array(
 		'type' => array(),
 	),
-	'form'   => array(
+	'form'    => array(
 		'class'  => array(),
 		'id'     => array(),
 		'action' => array(),
 		'method' => array(),
 		'target' => array(),
 	),
-	'input'  => array(
-		'class' => array(),
-		'id'    => array(),
-		'name'  => array(),
-		'type'  => array(),
-		'title' => array(),
-		'value' => array(),
+	'input'   => array(
+		'class'        => array(),
+		'id'           => array(),
+		'name'         => array(),
+		'type'         => array(),
+		'title'        => array(),
+		'value'        => array(),
+		'required'     => array(),
+		'placeholder'  => array(),
+		'autocomplete' => array(),
 	),
-	'button' => array(
+	'button'  => array(
 		'class'   => array(),
 		'id'      => array(),
 		'type'    => array(),
 		'onclick' => array(),
 		'name'    => array(),
 		'style'   => array(),
+		'value'   => array(),
 	),
-	'table'  => array(
+	'table'   => array(
 		'class' => array(),
 		'id'    => array(),
 	),
-	'thead'  => array(),
-	'tr'     => array(),
-	'th'     => array(),
-	'td'     => array(),
-	'tbody'  => array(),
-	'strong' => array(),
-	'h1'     => array(),
-	'h2'     => array(),
-	'h3'     => array(),
-	'p'      => array(),
+	'section' => array(),
+	'header'  => array(),
+	'strong'  => array(),
+	'h1'      => array(),
+	'h2'      => array(
+		'class' => array(),
+	),
+	'h3'      => array(),
+	'p'       => array(),
 );
 
 $request_args = array(
@@ -68,6 +74,7 @@ $current_whitelist = json_decode( wp_remote_retrieve_body( $request_whitelist ) 
 
 if ( isset( $current_whitelist->status ) && 'denied' === $current_whitelist->status ) {
 	$html  = '<div class="wrap" id="' . $this->parent->_token . '_statistics">' . "\n";
+	$html .= '<h2></h2>' . "\n";
 	$html .= '<h1>' . __( 'proxycheck.io Whitelist Editor', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
 	$html .= '<div class="pvberror">' . "\n";
 	$html .= '<div class="pvberrortitle">' . __( 'Oops!', 'proxy-vpn-blocker' ) . '</div>' . "\n";
@@ -82,48 +89,66 @@ if ( isset( $current_whitelist->status ) && 'denied' === $current_whitelist->sta
 	if ( ! empty( $getapikey ) ) {
 		// Build page HTML.
 		$html  = '<div class="wrap" id="' . $this->parent->_token . '_ipwhitelist">' . "\n";
-		$html .= '<h1>' . __( 'proxycheck.io Whitelist Editor', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
-		$html .= '<div class="pvboptionswrap">' . "\n";
-		$html .= '<h2>' . __( 'View and Edit Your proxycheck.io Whitelist', 'proxy-vpn-blocker' ) . '</h2>' . "\n";
-		$html .= '<p>' . __( 'The whitelist feature allows you to specify a list of IP Addresses, IP Ranges or ASN numbers which will not be detected as Proxy Servers or VPN\'s when checked using your API Key. You can write anything in the box below including \'#comments\' next to your ip/range/ASN, only valid Addresses, Ranges and ASN\'s will be lifted from the box so you need not worry about how you format your entries. ' ) . '<p>' . "\n";
-		$html .= '<p>' . __( 'Please note your Whitelist is always checked before any other checks are performed including before your Blacklist. ' ) . '<p>' . "\n";
+		$html .= '	<h2 class="pvb-wp-notice-fix"></h2>' . "\n";
+		$html .= '	<div class="pvbareawrap">' . "\n";
+		$html .= '		<h1>' . __( 'proxycheck.io Whitelist Editor', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
+		$html .= '		<h2>' . __( 'View and Edit Your proxycheck.io Whitelist', 'proxy-vpn-blocker' ) . '</h2>' . "\n";
+		$html .= '		<p>' . __( 'The whitelist feature allows you to specify a list of IP Addresses, IP Ranges or ASN numbers which will not be detected as Proxy Servers or VPN\'s when checked using your API Key. You can write anything in the box below including \'#comments\' next to your ip/range/ASN, only valid Addresses, Ranges and ASN\'s will be lifted from the box so you need not worry about how you format your entries. ' ) . '<p>' . "\n";
+		$html .= '		<p>' . __( 'Please note your Whitelist is always checked before any other checks are performed including before your Blacklist. ' ) . '<p>' . "\n";
 		// Adding to whitelist.
-		$html .= '<div id="add-list-wrapper">' . "\n";
-		$html .= '<form id="add-list-form" action="' . admin_url( 'admin-post.php' ) . '" method="POST" >' . "\n";
-		$html .= '<input type="hidden" name="action" value="whitelist_add">' . "\n";
-		$html .= '<input id="add-list-text" placeholder="IP Address, Range or ASN #optional tag" type="text" name="add" value="" required>' . "\n";
+		$html .= '		<div id="add-list-wrapper">' . "\n";
+		$html .= '			<form id="add-list-form" action="' . admin_url( 'admin-post.php' ) . '" method="POST" >' . "\n";
+		$html .= '				<input type="hidden" name="action" value="whitelist_add">' . "\n";
+		$html .= '				<input id="add-list-text" autocomplete="off" placeholder="IP Address, Range or ASN #optional tag" type="text" name="add" value="" required>' . "\n";
 		$html .= wp_nonce_field( 'add-ip-whitelist', 'nonce_add_ip_whitelist' ) . "\n";
-		$html .= '<button id="add-list-button" type="submit" name="submit" value="submit" ><span>Add to list</span></button>' . "\n";
-		$html .= '</form>' . "\n";
-		$html .= '</div>' . "\n";
-		$html .= '<form action="' . admin_url( 'admin-post.php' ) . '" method="POST" >' . "\n";
+		$html .= '				<button id="add-list-button" type="submit" name="submit" value="submit" ><span><i class="fas fa-plus"></i> Add to list</span></button>' . "\n";
+		$html .= '			</form>' . "\n";
+		$html .= '		</div>' . "\n";
+		$html .= '	</div>';
+		if ( isset( $_GET['add'] ) && 'yes' == $_GET['add'] ) {
+			$html .= '<div id="pvbshow" class="pvbsuccess"><i class="fas fa-check-circle"></i> Successfully added to your proxycheck.io Whitelist</div>' . "\n";
+		}
+		if ( isset( $_GET['remove'] ) && 'yes' == $_GET['remove'] ) {
+			$html .= '<div id="pvbshow" class="pvbsuccess"><i class="fas fa-check-circle"></i> Successfully removed from your proxycheck.io Whitelist</div>' . "\n";
+		}
+		if ( isset( $_GET['add'] ) && 'no' == $_GET['add'] ) {
+			$html .= '<div id="pvbshow" class="pvbfail"><i class="fas fa-times-circle"></i> Failed adding to your proxycheck.io Whitelist</div>' . "\n";
+		}
+		if ( isset( $_GET['remove'] ) && 'no' == $_GET['remove'] ) {
+			$html .= '<div id="pvbshow" class="pvbfail"><i class="fas fa-times-circle"></i> Failed removing from your proxycheck.io Whitelist</div>' . "\n";
+		}
+		$html .= '	<form action="' . admin_url( 'admin-post.php' ) . '" method="POST" >' . "\n";
 		$html .= wp_nonce_field( 'remove-ip-whitelist', 'nonce_remove_ip_whitelist' ) . "\n";
-		$html .= '<input type="hidden" name="action" value="whitelist_remove">' . "\n";
+		$html .= '		<input type="hidden" name="action" value="whitelist_remove">' . "\n";
 		// Display current whitelist.
-		$html .= '<table class="statsfancy">' . "\n";
-		$html .= '<thead>' . "\n";
-		$html .= '<tr>' . "\n";
-		$html .= '<th>Whitelisted IP, Range or ASN</th>' . "\n";
-		$html .= '<th>Delete Entry?</th>' . "\n";
-		$html .= '</tr>' . "\n";
-		$html .= '</thead>' . "\n";
-		$html .= '<tbody>' . "\n";
+		$html .= '		<div id="log_outer">' . "\n";
+		$html .= '			<div class="stats-fancy">' . "\n";
+		$html .= '				<section>' . "\n";
+		$html .= '					<header>' . "\n";
+		$html .= '						<div class="col left">Whitelisted IP, Range or ASN</div>' . "\n";
+		$html .= '						<div class="col"></div>' . "\n";
+		$html .= '					</header>' . "\n";
 		// phpcs:disable
 		if ( isset( $current_whitelist->Raw ) ) {
 			foreach ( $current_whitelist->Raw as $ip_address ) {
-				$html .= '<tr>' . "\n";
-				$html .= '<td>' . $ip_address . '</td>' . "\n";
-				$html .= '<td><button type="submit" class="entrydelete" name="remove" value="' . $ip_address . '">X</button></td>' . "\n";
-				$html .= '</tr>' . "\n";
+				$html .= '			<div class="row">' . "\n";
+				$html .= '				<div class="col left">' . $ip_address . '</div>' . "\n";
+				$html .= '				<div class="col"><button type="submit" class="entrydelete" name="remove" value="' . $ip_address . '"><i class="far fa-trash-alt"></i> Delete Entry</button></div>' . "\n";
+				$html .= '			</div>' . "\n";
 			}
 		} else {
-			$html .= '<tr><td> Your Whitelist is currently empty! </td></tr>';
+			$html .=  '				<div class="row">' . "\n";
+			$html .=  '					<div class="col left">Your Whitelist is currently empty!</div>' . "\n";
+			$html .=  '					<div class="col"></div>';
+			$html .=  '				</div>' . "\n";
 		}
 		// phpcs:enable
-		$html .= '</tbody>' . "\n";
-		$html .= '</table>' . "\n";
-		$html .= '</form>' . "\n";
-		$html .= '</div>';
+		$html .= '				</section>' . "\n";
+		$html .= '			</div>';
+		$html .= '			<div class="fancy-bottom">';
+		$html .= '			</div>';
+		$html .= '		</div>';
+		$html .= '	</form>' . "\n";
 		echo wp_kses( $html, $allowed_html );
 	} else {
 		$html  = '<div class="wrap" id="' . $this->parent->_token . '_ipwhitelist">' . "\n";

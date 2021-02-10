@@ -19,6 +19,9 @@ $allowed_html = array(
 		'href'  => array(),
 		'title' => array(),
 	),
+	'i'      => array(
+		'class' => array(),
+	),
 	'script' => array(
 		'type' => array(),
 	),
@@ -47,7 +50,9 @@ $allowed_html = array(
 	),
 	'strong' => array(),
 	'h1'     => array(),
-	'h2'     => array(),
+	'h2'     => array(
+		'class' => array(),
+	),
 	'h3'     => array(),
 	'p'      => array(),
 );
@@ -64,6 +69,7 @@ if ( ! empty( $get_api_key ) ) {
 	$api_key_usage = json_decode( wp_remote_retrieve_body( $request_usage ) );
 	if ( isset( $api_key_usage->status ) && 'denied' === $api_key_usage->status ) {
 		$html  = '<div class="wrap" id="' . $this->parent->_token . '_statistics">' . "\n";
+		$html .= '<h2></h2>' . "\n";
 		$html .= '<h1>' . __( 'Proxy &amp; VPN Blocker proxycheck.io Statistics', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
 		$html .= '<div class="pvberror">' . "\n";
 		$html .= '<div class="pvberrortitle">' . __( 'Oops!', 'proxy-vpn-blocker' ) . '</div>' . "\n";
@@ -81,8 +87,9 @@ if ( ! empty( $get_api_key ) ) {
 		$plan_tier     = $api_key_usage->{'Plan Tier'};
 		$burst_tokens  = $api_key_usage->{'Burst Tokens Available'};
 		$html          = '<div class="wrap" id="' . $this->parent->_token . '_statistics">' . "\n";
+		$html         .= '<h2 class="pvb-wp-notice-fix"></h2>' . "\n";
+		$html         .= '<div class="pvbareawrap">' . "\n";
 		$html         .= '<h1>' . __( 'Your proxycheck.io API Key Statistics', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
-		$html         .= '<div class="pvboptionswrap">' . "\n";
 		$html         .= '<div class="pvbapidaily">';
 		$html         .= '<div class="pvbapikey">' . __( 'API Key: ', 'proxy-vpn-blocker' ) . $get_api_key . '</div>' . "\n";
 		$html         .= '<div class="pvbapitier">' . __( 'Plan: ', 'proxy-vpn-blocker' ) . $plan_tier . __( ' | ', 'proxy-vpn-blocker' ) . number_format( $daily_limit ) . __( ' Daily Queries', 'proxy-vpn-blocker' ) . '</div>' . "\n";
@@ -92,13 +99,15 @@ if ( ! empty( $get_api_key ) ) {
 		if ( $usage_percent > 100 ) {
 			$usage_percent = 100;
 		}
-		$html         .= 'API Key Usage Today: ' . number_format( $queries_today ) . '/' . number_format( $daily_limit ) . ' Queries - ' . round( $usage_percent, 2 ) . '% of Total.';
-		$html         .= '<div class="pvbpercentbar">';
-		$html         .= '<div class="pvbpercentbarinner" style="width:' . $usage_percent . '%">';
-		$html         .= '</div> </div>';
-		$html         .= 'Burst Tokens Available: ' . $burst_tokens . "\n";
-		$html         .= '</div>';
-		$html         .= '<h3>' . __( 'API Key Queries: Past Month', 'proxy-vpn-blocker' ) . '</h3>' . "\n";
+		$html .= 'API Key Usage Today: ' . number_format( $queries_today ) . '/' . number_format( $daily_limit ) . ' Queries - ' . round( $usage_percent, 2 ) . '% of Total.';
+		$html .= '<div class="pvbpercentbar">';
+		$html .= '<div class="pvbpercentbarinner" style="width:' . $usage_percent . '%">';
+		$html .= '</div> </div>';
+		$html .= 'Burst Tokens Available: ' . $burst_tokens . "\n";
+		$html .= '</div>';
+		$html .= '</div>' . "\n";
+		$html .= '<div class="pvbareawrap">' . "\n";
+		$html .= '<h1>' . __( 'API Key Queries: Past Month', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
 		echo wp_kses( $html, $allowed_html );
 	}
 
@@ -106,7 +115,20 @@ if ( ! empty( $get_api_key ) ) {
 		$html  = '<script type="text/javascript">
 		am4core.ready(function() {
 			// Themes begin
+			function am4themes_myTheme(target) {
+				if (target instanceof am4core.InterfaceColorSet) {
+					target.setFor("secondaryButton", am4core.color("#5ba7cb"));
+					target.setFor("secondaryButtonHover", am4core.color("#5ba7cb").lighten(-0.2));
+					target.setFor("secondaryButtonDown", am4core.color("#5ba7cb").lighten(-0.2));
+					target.setFor("secondaryButtonActive", am4core.color("#5ba7cb").lighten(-0.2));
+					target.setFor("secondaryButtonText", am4core.color("#FFFFFF"));
+					target.setFor("secondaryButtonStroke", am4core.color("#467B88"));
+					target.setFor("text", am4core.color("#8C929A"));
+					target.setFor("alternativeText", am4core.color("#8C929A"));
+				}
+			  }
 			am4core.useTheme(am4themes_animated);
+			am4core.useTheme(am4themes_myTheme);
 			// Themes end
 		
 			// Create chart instance
@@ -198,19 +220,21 @@ if ( ! empty( $get_api_key ) ) {
 		$html .= '<p>' . __( '*Statistics delayed by several minutes.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
 		$html .= '</div>' . "\n";
 		// Get recent detection stats.
-		$html .= '<div class="pvboptionswrap">' . "\n";
-		$html .= '<h3>' . __( 'API Key Recent Positive Detections', 'proxy-vpn-blocker' ) . '</h3>' . "\n";
-		$html .= '<div id="log_content"></div>' . "\n";
-		$html .= '<form id="log_query_form" action="https://proxycheck.io/dashboard/export/detections/pvb.pagination.php" method="post" target="hiddenFrame">' . "\n";
-		$html .= '<input type="hidden" id="api_key" name="api_key" value="' . $get_api_key . '">' . "\n";
-		$html .= '<input type="hidden" id="page_number" name="page_number" value="0">' . "\n";
-		$html .= '<button class="pvbdefault" style="float: right; margin-top: 10px" onclick="decrementValue()" type="submit">View Newer Entries >></button>' . "\n";
-		$html .= '<button class="pvbdefault" style="margin-top: 10px" onclick="incrementValue()" type="submit"><< View Older Entries</button>' . "\n";
-		$html .= '</form>' . "\n";
+		$html .= '<div id="log_outer">' . "\n";
+		$html .= '	<div id="log_content"></div>' . "\n";
+		$html .= '	<form id="log_query_form" action="https://proxycheck.io/dashboard/export/detections/pvb.pagination.v2.php" method="post" target="hiddenFrame">' . "\n";
+		$html .= '		<input type="hidden" id="api_key" name="api_key" value="' . $get_api_key . '">' . "\n";
+		$html .= '		<input type="hidden" id="page_number" name="page_number" value="0">' . "\n";
+		$html .= '		<div class="fancy-bottom">' . "\n";
+		$html .= '			<button class="pvbdefault" style="float: right;" onclick="decrementValue()" type="submit">View Newer Entries <i class="fas fa-angle-double-right"></i></button>' . "\n";
+		$html .= '			<button class="pvbdefault"  onclick="incrementValue()" type="submit"><i class="fas fa-angle-double-left"></i> View Older Entries</button>' . "\n";
+		$html .= '		</div>' . "\n";
+		$html .= '	</form>' . "\n";
 		$html .= '</div>' . "\n";
 		echo wp_kses( $html, $allowed_html );
 } else {
 	$html  = '<div class="wrap" id="' . $this->parent->_token . '_statistics">' . "\n";
+	$html .= '<div class="pvbareawrap">' . "\n";
 	$html .= '<h1>' . __( 'Proxy &amp; VPN Blocker proxycheck.io Statistics', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
 	$html .= '<div class="pvberror">' . "\n";
 	$html .= '<div class="pvberrortitle">' . __( 'Oops!', 'proxy-vpn-blocker' ) . '</div>' . "\n";
@@ -232,7 +256,7 @@ function pagination_javascript() {
 	?>
 	<script type="text/javascript">
 						jQuery(document).ready(function($) {
-							$('#log_content').load("https://proxycheck.io/dashboard/export/detections/pvb.pagination.php?api_key=<?php echo $get_api_key; ?>");
+							$('#log_content').load("https://proxycheck.io/dashboard/export/detections/pvb.pagination.v2.php?api_key=<?php echo $get_api_key; ?>");
 						});
 						jQuery('#log_query_form').submit(function(e) { // catch the form's submit event
 							e.preventDefault();

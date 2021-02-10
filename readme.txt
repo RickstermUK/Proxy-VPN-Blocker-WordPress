@@ -3,9 +3,9 @@ Contributors: rickstermuk
 Tags: security, proxy blocker, vpn blocker, proxy, vpn, proxycheck, anti spam, spam, anti-spam, Tor, Anti-Tor, Tor block
 Donate link: https://pvb.ricksterm.net/donate
 Requires at least: 4.9
-Tested up to: 5.6
+Tested up to: 5.6.1
 Requires PHP: 5.6
-Stable tag: 1.7.2
+Stable tag: 1.8.0
 License: GPLv2
 
 Blocks Proxies, VPN's, select Countries, IP's, Ranges & ASN's accessing your site login or commenting on pages & posts using the proxycheck.io API.
@@ -90,6 +90,11 @@ Remember: If you ever have to do this, delete the disablepvb.txt file after you 
 5. Whitelist manipulation page. The blacklist page looks similar to this.
 
 == Changelog ==
+
+= 1.8.0 2021-02-09 =
+* The Settings UI has been broken down into tabs due to the amount of options available now. The page length was deemed to be too long and confusing for some users.
+* The settings UI has been refreshed, they are now also in Dark Mode depending on OS/Browser setting if supported.
+* Default for VPN Risk Score has been changed from 33 to 66 (recommended) - This only affects fresh installs.
 
 = 1.7.2 2020-12-27 =
 * Fix for potential errors and issues if your proxycheck API query allowance was exhausted.

@@ -4,14 +4,14 @@
  *
  * @package           Proxy & VPN Blocker
  * @author            RickstermUK
- * @copyright         2017 - 2020 Proxy & VPN Blocker
+ * @copyright         2017 - 2021 Proxy & VPN Blocker
  * @license           GPL-2.0-or-later
  *
  * @wordpress-plugin
  * Plugin Name: Proxy & VPN Blocker
  * Plugin URI: https://pvb.ricksterm.net
  * description: Proxy & VPN Blocker. This plugin will prevent Proxies and VPN's accessing your site's login page or making comments on pages & posts using the Proxycheck.io API
- * Version: 1.7.2
+ * Version: 1.8.0
  * Author: RickstermUK
  * Author URI: https://profiles.wordpress.org/rickstermuk
  * License: GPLv2
@@ -20,8 +20,8 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-$version     = '1.7.2';
-$update_date = 'December 27th 2020';
+$version     = '1.8.0';
+$update_date = 'February 9th 2021';
 
 if ( version_compare( get_option( 'proxy_vpn_blocker_version' ), $version, '<' ) ) {
 	update_option( 'proxy_vpn_blocker_version', $version );
@@ -73,7 +73,7 @@ add_action( 'admin_notices', 'disable_pvb_file_exists' );
  * Display message if cloudflare detected but not enabled in Proxy & VPN Blocker
  */
 function pvb_cloudflare_not_enabled() {
-	if ( get_option( 'pvb_proxycheckio_CLOUDFLARE_select_box' ) == '' && isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) && get_option( 'pvb_proxycheckio_master_activation' ) == 'on' ) {
+	if ( get_option( 'pvb_proxycheckio_CLOUDFLARE_select_box' ) === '' && isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) && get_option( 'pvb_proxycheckio_master_activation' ) === 'on' ) {
 		echo '<div class="notice notice-warning pvb-cloudflare-notice is-dismissible">';
 		echo '<p>' . esc_html_e( 'Proxy & VPN Blocker has detected that you are probably using Cloudflare but have not enabled the Cloudflare option in Proxy & VPN Blocker settings, please enable this or we <i>*may not</i> be able to check visitors real IP addresses!', 'proxy-vpn-blocker' ) . '</p>';
 		echo '<p>' . esc_html_e( '*If your web server supports Cloudflare natively then Proxy & VPN Blocker will get the correct visitor IP anyway, but you should still enable the Cloudflare option.', 'proxy-vpn-blocker' ) . '</p>';

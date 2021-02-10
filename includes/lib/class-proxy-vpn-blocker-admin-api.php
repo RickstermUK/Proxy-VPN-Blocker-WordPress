@@ -73,15 +73,15 @@ class proxy_vpn_blocker_Admin_API {
 			case 'checkbox':
 				$checked = '';
 				if ( $data && 'on' === $data ) {
-					$checked = 'checked="checked"';
+					$checked = 'checked';
 				}
-				$html .= '<label class="switch">' . "\n";
-				$html .= '<input autocomplete="off" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" id="' . esc_attr( $field['id'] ) . '" ' . $checked . '>' . "\n";
-				$html .= '<div class="slider round">' . "\n";
-				$html .= '<span class="slideron">ON</span>' . "\n";
-				$html .= '<span class="slideroff">OFF</span>' . "\n";
-				$html .= '</div>' . "\n";
+				$html .= '<div class="onoffswitch">' . "\n";
+				$html .= '<input autocomplete="off" tabindex="0" class="onoffswitch-checkbox" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" id="' . esc_attr( $field['id'] ) . '" ' . $checked . '>' . "\n";
+				$html .= '<label class="onoffswitch-label" for="' . esc_attr( $field['id'] ) . '">' . "\n";
+				$html .= '<span class="onoffswitch-inner"></span>' . "\n";
+				$html .= '<span class="onoffswitch-switch"></span>' . "\n";
 				$html .= '</label>';
+				$html .= '</div>' . "\n";
 				break;
 
 			case 'textslider':
@@ -101,7 +101,7 @@ class proxy_vpn_blocker_Admin_API {
 			case 'textslider-riskscore-vpn':
 				$html .= '<div class="range-slider">' . "\n";
 				$html .= '<input class="range_sliderrange" id="sliderrange3" name="' . esc_attr( $option_name ) . '" type="range" value="' . esc_attr( $data ) . '" min="1" max="99" step="1" autocomplete="off">' . "\n";
-				$html .= '<span class="range_slidervalue2" id="sliderrangeoutput3"></span>' . "\n";
+				$html .= '<span class="range_slidervalue3" id="sliderrangeoutput3"></span>' . "\n";
 				$html .= '</div>';
 				break;
 
@@ -109,6 +109,20 @@ class proxy_vpn_blocker_Admin_API {
 				$html .= '<div class="range-slider">' . "\n";
 				$html .= '<input class="range_sliderrange" id="sliderrange4" name="' . esc_attr( $option_name ) . '" type="range" value="' . esc_attr( $data ) . '" min="10" max="240" step="10" autocomplete="off">' . "\n";
 				$html .= '<span class="range_slidervalue4" id="sliderrangeoutput4"></span>' . "\n";
+				$html .= '</div>';
+				break;
+
+			case 'textslider-riskscore-woo-proxy':
+				$html .= '<div class="range-slider">' . "\n";
+				$html .= '<input class="range_sliderrange" id="sliderrange5" name="' . esc_attr( $option_name ) . '" type="range" value="' . esc_attr( $data ) . '" min="1" max="99" step="1" autocomplete="off">' . "\n";
+				$html .= '<span class="range_slidervalue5" id="sliderrangeoutput5"></span>' . "\n";
+				$html .= '</div>';
+				break;
+
+			case 'textslider-riskscore-woo-vpn':
+				$html .= '<div class="range-slider">' . "\n";
+				$html .= '<input class="range_sliderrange" id="sliderrange6" name="' . esc_attr( $option_name ) . '" type="range" value="' . esc_attr( $data ) . '" min="1" max="99" step="1" autocomplete="off">' . "\n";
+				$html .= '<span class="range_slidervalue6" id="sliderrangeoutput6"></span>' . "\n";
 				$html .= '</div>';
 				break;
 
@@ -192,6 +206,20 @@ class proxy_vpn_blocker_Admin_API {
 				$html .= '</select> ';
 				break;
 
+			case 'clearsettings':
+				$checked = '';
+				if ( $data && 'on' === $data ) {
+					$checked = 'checked="checked"';
+				}
+				$html .= '<label class="switch">' . "\n";
+				$html .= '<input autocomplete="off" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" id="' . esc_attr( $field['id'] ) . '" ' . $checked . '>' . "\n";
+				$html .= '<div class="sliderdel round">' . "\n";
+				$html .= '<span class="sliderdelon">YES</span>' . "\n";
+				$html .= '<span class="sliderdeloff">NO</span>' . "\n";
+				$html .= '</div>' . "\n";
+				$html .= '</label>';
+				break;
+
 			case 'editor':
 				wp_editor(
 					$data,
@@ -200,10 +228,6 @@ class proxy_vpn_blocker_Admin_API {
 						'textarea_name' => $option_name,
 					)
 				);
-				break;
-
-			case 'hidden_key_field':
-					$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="hidden" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" value="' . esc_attr( uniqid() ) . '" />' . "\n";
 				break;
 		}
 

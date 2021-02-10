@@ -94,7 +94,7 @@ class proxy_vpn_blocker {
 	 * @since   1.0
 	 * @return  void
 	 */
-	public function __construct( $file = '', $version = '1.7.2' ) {
+	public function __construct( $file = '', $version = '1.8.0' ) {
 		$this->_version = $version;
 		$this->_token   = 'proxy_vpn_blocker';
 
@@ -110,9 +110,9 @@ class proxy_vpn_blocker {
 
 		// Load admin JS & CSS.
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_styles' ), 10, 1 );
-		add_action( 'admin_enqueue_scripts', array( $this, 'pvb_scripts_header_settings_function' ), 10, 1 );
-		add_action( 'admin_enqueue_scripts', array( $this, 'pvb_scripts_header_information_function' ), 10, 1 );
-		add_action( 'admin_footer', array( $this, 'pvb_scripts_footer_function' ), 10, 1 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'pvb_scripts_footer_function' ), 10, 1 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'pvb_scripts_header_function' ), 10, 1 );
+		//add_action( 'admin_footer', array( $this, 'pvb_scripts_footer_function' ), 10, 1 );
 
 		// Load API for generic admin functions.
 		if ( is_admin() ) {
@@ -128,70 +128,74 @@ class proxy_vpn_blocker {
 	} // End __construct ()
 
 	/**
-	 * Load admin CSS.
+	 * Admin enqueue style.
+	 *
+	 * @param string $hook Hook parameter.
+	 *
+	 * @return void
 	 */
-	public function admin_enqueue_styles() {
-		$current_screen = get_current_screen();
-		$pages_array    = array( 'proxy_vpn_blocker_settings', 'proxy_vpn_blocker_blacklist', 'proxy_vpn_blocker_whitelist', 'proxy_vpn_blocker_statistics', 'proxy_vpn_blocker_advanced' );
-		foreach ( $pages_array as $page ) {
-			if ( strpos( $current_screen->base, $page ) != true ) {
-				continue;
-			} else {
-				wp_register_style( $this->_token . '-admin', esc_url( $this->assets_url ) . 'css/admin.min.css', array(), $this->_version );
-				wp_enqueue_style( $this->_token . '-admin' );
-				wp_register_style( $this->_token . '-chosen', esc_url( $this->assets_url ) . 'css/chosen.min.css', array(), $this->_version );
-				wp_enqueue_style( $this->_token . '-chosen' );
-			}
+	public function admin_enqueue_styles( $hook = '' ) {
+		$screen = get_current_screen();
+		if ( stripos( $screen->base, 'proxy_vpn_blocker_' ) ) {
+			wp_register_style( $this->_token . '-admin', esc_url( $this->assets_url ) . 'css/admin.min.css', array(), $this->_version );
+			wp_enqueue_style( $this->_token . '-admin' );
+			wp_register_style( $this->_token . '-chosen', esc_url( $this->assets_url ) . 'css/chosen/chosen.min.css', array(), $this->_version );
+			wp_enqueue_style( $this->_token . '-chosen' );
+			wp_register_style( $this->_token . '-chosen-dark', esc_url( $this->assets_url ) . 'css/chosen/chosen-dark.min.css', array(), $this->_version );
+			wp_enqueue_style( $this->_token . '-chosen-dark' );
+			wp_register_style( $this->_token . '-fontawesome', esc_url( $this->assets_url ) . 'css/fontawesome/all.min.css', array(), $this->_version );
+			wp_enqueue_style( $this->_token . '-fontawesome' );
 		}
-
 	} // End admin_enqueue_styles ()
 
 	/**
-	 * Add scripts to PVB Settings Header
+	 * Load admin header Javascript.
+	 *
+	 * @access  public
+	 *
+	 * @param string $hook Hook parameter.
+	 *
+	 * @return  void
+	 * @since   1.0.0
 	 */
-	public function pvb_scripts_header_settings_function() {
-		$current_screen = get_current_screen();
-		if ( strpos( $current_screen->base, 'proxy_vpn_blocker_settings' ) === false ) {
-			return;
-		} else {
-			wp_register_script( $this->_token . '-settings-pvb-cookie-js', esc_url( $this->assets_url ) . 'js/cookie' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version, true );
-			wp_enqueue_script( $this->_token . '-settings-pvb-cookie-js' );
-		}
-	}//end pvb_scripts_header_settings_function()
-
-	/**
-	 * Add scripts to PVB Settings Header Info
-	 */
-	public function pvb_scripts_header_information_function() {
-		$current_screen = get_current_screen();
-		if ( strpos( $current_screen->base, 'proxy_vpn_blocker_statistics' ) === false ) {
-			return;
-		} else {
+	public function pvb_scripts_header_function( $hook = '' ) {
+		$screen = get_current_screen();
+		if ( stripos( $screen->base, 'proxy_vpn_blocker_statistics' ) ) {
 			wp_register_script( $this->_token . '-settings-pvb-am4core-js', esc_url( $this->assets_url ) . 'js/amcharts/core.js', array( 'jquery' ), $this->_version, false );
 			wp_enqueue_script( $this->_token . '-settings-pvb-am4core-js' );
 			wp_register_script( $this->_token . '-settings-pvb-am4charts-js', esc_url( $this->assets_url ) . 'js/amcharts/charts.js', array( 'jquery' ), $this->_version, false );
 			wp_enqueue_script( $this->_token . '-settings-pvb-am4charts-js' );
 			wp_register_script( $this->_token . '-settings-pvb-am4charts-animated-js', esc_url( $this->assets_url ) . 'js/amcharts/theme/animated.js', array( 'jquery' ), $this->_version, false );
 			wp_enqueue_script( $this->_token . '-settings-pvb-am4charts-animated-js' );
+			wp_register_script( $this->_token . '-settings-pvb-am4charts-dark-js', esc_url( $this->assets_url ) . 'js/amcharts/theme/dark.js', array( 'jquery' ), $this->_version, false );
+			wp_enqueue_script( $this->_token . '-settings-pvb-am4charts-dark-js' );
 		}
-	}//end pvb_scripts_header_information_function()
+	}//end pvb_scripts_header_function()
 
 
 	/**
-	 * Add scripts to PVB Settings Footer
+	 * Load admin Footer Javascript.
+	 *
+	 * @access  public
+	 *
+	 * @param string $hook Hook parameter.
+	 *
+	 * @return  void
+	 * @since   1.0.0
 	 */
-	public function pvb_scripts_footer_function() {
-		$current_screen = get_current_screen();
-		if ( strpos( $current_screen->base, 'proxy_vpn_blocker_settings' ) === false ) {
-			return;
-		} else {
+	public function pvb_scripts_footer_function( $hook = '' ) {
+		$screen = get_current_screen();
+		if ( stripos( $screen->base, 'proxy_vpn_blocker_' ) ) {
+			wp_enqueue_script( 'jquery-ui-core' );// enqueue jQuery UI Core.
+			wp_enqueue_script( 'jquery-ui-tabs' );// enqueue jQuery UI Tabs.
 			wp_register_script( $this->_token . '-settings-pvb-js', esc_url( $this->assets_url ) . 'js/settings' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version, true );
 			wp_enqueue_script( $this->_token . '-settings-pvb-js' );
 			wp_register_script( $this->_token . '-settings-pvb-chosen-js', esc_url( $this->assets_url ) . 'js/chosen.jquery' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version, true );
 			wp_enqueue_script( $this->_token . '-settings-pvb-chosen-js' );
+			wp_register_script( $this->_token . '-settings-pvb-cookie-js', esc_url( $this->assets_url ) . 'js/cookie' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version, true );
+			wp_enqueue_script( $this->_token . '-settings-pvb-cookie-js' );
 		}
 	}//end pvb_scripts_footer_function()
-
 	/**
 	 * Load plugin localisation
 	 *
@@ -229,7 +233,7 @@ class proxy_vpn_blocker {
 	 * @see proxy_vpn_blocker()
 	 * @return Main proxy_vpn_blocker instance
 	 */
-	public static function instance( $file = '', $version = '1.7.2' ) {
+	public static function instance( $file = '', $version = '1.8.0' ) {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self( $file, $version );
 		}
