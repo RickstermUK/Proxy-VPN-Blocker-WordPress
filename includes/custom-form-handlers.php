@@ -37,10 +37,10 @@ function whitelist_add() {
 		$response     = wp_remote_post( 'https://proxycheck.io/dashboard/whitelist/add/?key=' . get_option( 'pvb_proxycheckio_API_Key_field' ), $args );
 		$decoded_json = json_decode( wp_remote_retrieve_body( $response ) );
 		if ( $decoded_json->success ) {
-			wp_safe_redirect( add_query_arg( 'add', 'yes', admin_url( 'admin.php?page=proxy_vpn_blocker_whitelist' ) ) );
+			wp_safe_redirect( add_query_arg( 'add-pvb-whitelist', 'yes', admin_url( 'admin.php?page=proxy_vpn_blocker_whitelist' ) ) );
 			exit();
 		} else {
-			wp_safe_redirect( add_query_arg( 'add', 'no', admin_url( 'admin.php?page=proxy_vpn_blocker_whitelist' ) ) );
+			wp_safe_redirect( add_query_arg( 'add-pvb-whitelist', 'no', admin_url( 'admin.php?page=proxy_vpn_blocker_whitelist' ) ) );
 			exit();
 		}
 	}
@@ -72,10 +72,10 @@ function whitelist_remove() {
 		$response     = wp_remote_post( 'https://proxycheck.io/dashboard/whitelist/remove/?key=' . get_option( 'pvb_proxycheckio_API_Key_field' ), $args );
 		$decoded_json = json_decode( wp_remote_retrieve_body( $response ) );
 		if ( $decoded_json->success ) {
-			wp_safe_redirect(add_query_arg( 'remove', 'yes', admin_url( 'admin.php?page=proxy_vpn_blocker_whitelist' ) ) );
+			wp_safe_redirect( add_query_arg( 'remove-pvb-whitelist', 'yes', admin_url( 'admin.php?page=proxy_vpn_blocker_whitelist' ) ) );
 			exit();
 		} else {
-			wp_safe_redirect(add_query_arg( 'remove', 'no', admin_url( 'admin.php?page=proxy_vpn_blocker_whitelist' ) ) );
+			wp_safe_redirect( add_query_arg( 'remove-pvb-whitelist', 'no', admin_url( 'admin.php?page=proxy_vpn_blocker_whitelist' ) ) );
 			exit();
 		}
 	}
@@ -109,10 +109,10 @@ function blacklist_add() {
 		$response     = wp_remote_post( 'https://proxycheck.io/dashboard/blacklist/add/?key=' . get_option( 'pvb_proxycheckio_API_Key_field' ), $args );
 		$decoded_json = json_decode( wp_remote_retrieve_body( $response ) );
 		if ( $decoded_json->success ) {
-			wp_safe_redirect( add_query_arg( 'add', 'yes', admin_url( 'admin.php?page=proxy_vpn_blocker_whitelist' ) ) );
+			wp_safe_redirect( add_query_arg( 'add-pvb-blacklist', 'yes', admin_url( 'admin.php?page=proxy_vpn_blocker_blacklist' ) ) );
 			exit();
 		} else {
-			wp_safe_redirect( add_query_arg( 'add', 'no', admin_url( 'admin.php?page=proxy_vpn_blocker_whitelist' ) ) );
+			wp_safe_redirect( add_query_arg( 'add-pvb-blacklist', 'no', admin_url( 'admin.php?page=proxy_vpn_blocker_blacklist' ) ) );
 			exit();
 		}
 	}
@@ -144,10 +144,10 @@ function blacklist_remove() {
 		$response     = wp_remote_post( 'https://proxycheck.io/dashboard/blacklist/remove/?key=' . get_option( 'pvb_proxycheckio_API_Key_field' ), $args );
 		$decoded_json = json_decode( wp_remote_retrieve_body( $response ) );
 		if ( $decoded_json->success ) {
-			wp_safe_redirect( add_query_arg( 'remove', 'yes', admin_url( 'admin.php?page=proxy_vpn_blocker_whitelist' ) ) );
+			wp_safe_redirect( add_query_arg( 'remove-pvb-blacklist', 'yes', admin_url( 'admin.php?page=proxy_vpn_blocker_blacklist' ) ) );
 			exit();
 		} else {
-			wp_safe_redirect( add_query_arg( 'remove', 'no', admin_url( 'admin.php?page=proxy_vpn_blocker_whitelist' ) ) );
+			wp_safe_redirect( add_query_arg( 'remove-pvb-blacklist', 'no', admin_url( 'admin.php?page=proxy_vpn_blocker_blacklist' ) ) );
 			exit();
 		}
 	}

@@ -229,6 +229,10 @@ class proxy_vpn_blocker_Admin_API {
 					)
 				);
 				break;
+
+			case 'hidden_key_field':
+				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="hidden" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" value="' . esc_attr( uniqid() ) . '" />' . "\n";
+				break;
 		}
 
 		switch ( $field['type'] ) {

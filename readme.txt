@@ -5,7 +5,7 @@ Donate link: https://pvb.ricksterm.net/donate
 Requires at least: 4.9
 Tested up to: 5.6.1
 Requires PHP: 5.6
-Stable tag: 1.8.0
+Stable tag: 1.8.2
 License: GPLv2
 
 Blocks Proxies, VPN's, select Countries, IP's, Ranges & ASN's accessing your site login or commenting on pages & posts using the proxycheck.io API.
@@ -90,6 +90,17 @@ Remember: If you ever have to do this, delete the disablepvb.txt file after you 
 5. Whitelist manipulation page. The blacklist page looks similar to this.
 
 == Changelog ==
+
+= 1.8.2 2021-02-16 =
+* Fixed an issue that caused the Country Whitelist option to not function correctly.
+* Check implemented to disable the Country Whitelist option if the country list is empty, this is to avoid a situation where nobody can access the website.
+* Fixed a redirection issue when adding/removing IP's on the Blacklist Editor page in Settings, it functioned, but redirected you back to the Whitelist Editor page instead of the Blacklist Editor Page after form submission.
+* Added an experimental Debugging Information Option (perhaps expandable in future) which enables a Debugging Page in PVB Settings displaying some information that may be useful for the PVB developer to help diagnose issues.
+* Significantly decreased the amount of Icon font files included in Settings so that only the used icons are included as their own font.
+
+= 1.8.1 2021-02-11 =
+* Multiple fixes for issues affecting the use of known good IP cache. This did not affect the detection of Proxies and VPN's and only stopped known good IP's being cached to prevent constant recheck.
+* Refactored API Call function.
 
 = 1.8.0 2021-02-09 =
 * The Settings UI has been broken down into tabs due to the amount of options available now. The page length was deemed to be too long and confusing for some users.

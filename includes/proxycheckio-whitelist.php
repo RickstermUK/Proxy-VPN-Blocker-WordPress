@@ -63,30 +63,34 @@ $allowed_html = array(
 	'p'       => array(),
 );
 
-$request_args = array(
-	'timeout'     => '5',
-	'blocking'    => true,
-	'httpversion' => '1.1',
-);
 
-$request_whitelist = wp_remote_get( 'https://proxycheck.io/dashboard/whitelist/list/?key=' . get_option( 'pvb_proxycheckio_API_Key_field' ), $request_args );
-$current_whitelist = json_decode( wp_remote_retrieve_body( $request_whitelist ) );
 
-if ( isset( $current_whitelist->status ) && 'denied' === $current_whitelist->status ) {
-	$html  = '<div class="wrap" id="' . $this->parent->_token . '_statistics">' . "\n";
-	$html .= '<h2></h2>' . "\n";
-	$html .= '<h1>' . __( 'proxycheck.io Whitelist Editor', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
-	$html .= '<div class="pvberror">' . "\n";
-	$html .= '<div class="pvberrortitle">' . __( 'Oops!', 'proxy-vpn-blocker' ) . '</div>' . "\n";
-	$html .= '<div class="pvberrorinside">' . "\n";
-	$html .= '<h2>' . __( 'You must enable Dashboard API Access within your <a href="https://proxycheck.io" target="_blank">proxycheck.io</a> Dashboard to access this part of Proxy & VPN Blocker', 'proxy-vpn-blocker' ) . '</h2>' . "\n";
-	$html .= '</div>' . "\n";
-	$html .= '</div>' . "\n";
-	$html .= '</div>';
-	echo wp_kses( $html, $allowed_html );
-} else {
-	$getapikey = get_option( 'pvb_proxycheckio_API_Key_field' );
-	if ( ! empty( $getapikey ) ) {
+$get_api_key  = get_option( 'pvb_proxycheckio_API_Key_field' );
+$add_ip_nonce = wp_create_nonce( 'add-ip-whitelist' );
+
+if ( ! empty( $get_api_key ) ) {
+	// Requesting current blacklist.
+	$request_args      = array(
+		'timeout'     => '5',
+		'blocking'    => true,
+		'httpversion' => '1.1',
+	);
+	$request_whitelist = wp_remote_get( 'https://proxycheck.io/dashboard/whitelist/list/?key=' . get_option( 'pvb_proxycheckio_API_Key_field' ), $request_args );
+	$current_whitelist = json_decode( wp_remote_retrieve_body( $request_whitelist ) );
+
+	if ( isset( $current_whitelist->status ) && 'denied' === $current_whitelist->status ) {
+		$html  = '<div class="wrap" id="' . $this->parent->_token . '_statistics">' . "\n";
+		$html .= '<h2></h2>' . "\n";
+		$html .= '<h1>' . __( 'proxycheck.io Whitelist Editor', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
+		$html .= '<div class="pvberror">' . "\n";
+		$html .= '<div class="pvberrortitle">' . __( 'Oops!', 'proxy-vpn-blocker' ) . '</div>' . "\n";
+		$html .= '<div class="pvberrorinside">' . "\n";
+		$html .= '<h2>' . __( 'You must enable Dashboard API Access within your <a href="https://proxycheck.io" target="_blank">proxycheck.io</a> Dashboard to access this part of Proxy & VPN Blocker', 'proxy-vpn-blocker' ) . '</h2>' . "\n";
+		$html .= '</div>' . "\n";
+		$html .= '</div>' . "\n";
+		$html .= '</div>';
+		echo wp_kses( $html, $allowed_html );
+	} else {
 		// Build page HTML.
 		$html  = '<div class="wrap" id="' . $this->parent->_token . '_ipwhitelist">' . "\n";
 		$html .= '	<h2 class="pvb-wp-notice-fix"></h2>' . "\n";
@@ -101,21 +105,21 @@ if ( isset( $current_whitelist->status ) && 'denied' === $current_whitelist->sta
 		$html .= '				<input type="hidden" name="action" value="whitelist_add">' . "\n";
 		$html .= '				<input id="add-list-text" autocomplete="off" placeholder="IP Address, Range or ASN #optional tag" type="text" name="add" value="" required>' . "\n";
 		$html .= wp_nonce_field( 'add-ip-whitelist', 'nonce_add_ip_whitelist' ) . "\n";
-		$html .= '				<button id="add-list-button" type="submit" name="submit" value="submit" ><span><i class="fas fa-plus"></i> Add to list</span></button>' . "\n";
+		$html .= '				<button id="add-list-button" type="submit" name="submit" value="submit" ><span><i class="pvb-fa-icon-plus"></i> Add to list</span></button>' . "\n";
 		$html .= '			</form>' . "\n";
 		$html .= '		</div>' . "\n";
 		$html .= '	</div>';
-		if ( isset( $_GET['add'] ) && 'yes' == $_GET['add'] ) {
-			$html .= '<div id="pvbshow" class="pvbsuccess"><i class="fas fa-check-circle"></i> Successfully added to your proxycheck.io Whitelist</div>' . "\n";
+		if ( isset( $_GET['add-pvb-whitelist'] ) && 'yes' === $_GET['add-pvb-whitelist'] ) {
+			$html .= '<div id="pvbshow" class="pvbsuccess"><i class="pvb-fa-icon-check-circle"></i> Successfully added to your proxycheck.io Whitelist</div>' . "\n";
 		}
-		if ( isset( $_GET['remove'] ) && 'yes' == $_GET['remove'] ) {
-			$html .= '<div id="pvbshow" class="pvbsuccess"><i class="fas fa-check-circle"></i> Successfully removed from your proxycheck.io Whitelist</div>' . "\n";
+		if ( isset( $_GET['remove-pvb-whitelist'] ) && 'yes' === $_GET['remove-pvb-whitelist'] ) {
+			$html .= '<div id="pvbshow" class="pvbsuccess"><i class="pvb-fa-icon-check-circle"></i> Successfully removed from your proxycheck.io Whitelist</div>' . "\n";
 		}
-		if ( isset( $_GET['add'] ) && 'no' == $_GET['add'] ) {
-			$html .= '<div id="pvbshow" class="pvbfail"><i class="fas fa-times-circle"></i> Failed adding to your proxycheck.io Whitelist</div>' . "\n";
+		if ( isset( $_GET['add-pvb-whitelist'] ) && 'no' === $_GET['add-pvb-whitelist'] ) {
+			$html .= '<div id="pvbshow" class="pvbfail"><i class="pvb-fa-icon-times-circle"></i> Failed adding to your proxycheck.io Whitelist</div>' . "\n";
 		}
-		if ( isset( $_GET['remove'] ) && 'no' == $_GET['remove'] ) {
-			$html .= '<div id="pvbshow" class="pvbfail"><i class="fas fa-times-circle"></i> Failed removing from your proxycheck.io Whitelist</div>' . "\n";
+		if ( isset( $_GET['remove-pvb-whitelist'] ) && 'no' === $_GET['remove-pvb-whitelist'] ) {
+			$html .= '<div id="pvbshow" class="pvbfail"><i class="pvb-fa-icon-times-circle"></i> Failed removing from your proxycheck.io Whitelist</div>' . "\n";
 		}
 		$html .= '	<form action="' . admin_url( 'admin-post.php' ) . '" method="POST" >' . "\n";
 		$html .= wp_nonce_field( 'remove-ip-whitelist', 'nonce_remove_ip_whitelist' ) . "\n";
@@ -133,7 +137,7 @@ if ( isset( $current_whitelist->status ) && 'denied' === $current_whitelist->sta
 			foreach ( $current_whitelist->Raw as $ip_address ) {
 				$html .= '			<div class="row">' . "\n";
 				$html .= '				<div class="col left">' . $ip_address . '</div>' . "\n";
-				$html .= '				<div class="col"><button type="submit" class="entrydelete" name="remove" value="' . $ip_address . '"><i class="far fa-trash-alt"></i> Delete Entry</button></div>' . "\n";
+				$html .= '				<div class="col"><button type="submit" class="entrydelete" name="remove" value="' . $ip_address . '"><i class="pvb-fa-icon-trash"></i> Delete Entry</button></div>' . "\n";
 				$html .= '			</div>' . "\n";
 			}
 		} else {
@@ -150,18 +154,18 @@ if ( isset( $current_whitelist->status ) && 'denied' === $current_whitelist->sta
 		$html .= '		</div>';
 		$html .= '	</form>' . "\n";
 		echo wp_kses( $html, $allowed_html );
-	} else {
-		$html  = '<div class="wrap" id="' . $this->parent->_token . '_ipwhitelist">' . "\n";
-		$html .= '<h1>' . __( 'proxycheck.io Whitelist Editor', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
-		$html .= '<div class="pvberror">' . "\n";
-		$html .= '<div class="pvberrortitle">' . __( 'Oops!', 'proxy-vpn-blocker' ) . '</div>' . "\n";
-		$html .= '<div class="pvberrorinside">' . "\n";
-		$html .= '<h2>' . __( 'Please set a <a href="https://proxycheck.io" target="_blank">proxycheck.io</a> API Key to see this page!', 'proxy-vpn-blocker' ) . '</h2>' . "\n";
-		$html .= '<h3>' . __( 'This page will display and allow you to edit your proxycheck.io whitelist.', 'proxy-vpn-blocker' ) . '</h3>' . "\n";
-		$html .= '<h3>' . __( 'If you need an API Key they are free for up to 1000 daily queries, paid plans are available with more.', 'proxy-vpn-blocker' ) . '</h3>' . "\n";
-		$html .= '</div>' . "\n";
-		$html .= '</div>' . "\n";
-		$html .= '</div>';
-		echo wp_kses( $html, $allowed_html );
 	}
+} else {
+	$html  = '<div class="wrap" id="' . $this->parent->_token . '_ipwhitelist">' . "\n";
+	$html .= '<h1>' . __( 'proxycheck.io Whitelist Editor', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
+	$html .= '<div class="pvberror">' . "\n";
+	$html .= '<div class="pvberrortitle">' . __( 'Oops!', 'proxy-vpn-blocker' ) . '</div>' . "\n";
+	$html .= '<div class="pvberrorinside">' . "\n";
+	$html .= '<h2>' . __( 'Please set a <a href="https://proxycheck.io" target="_blank">proxycheck.io</a> API Key to see this page!', 'proxy-vpn-blocker' ) . '</h2>' . "\n";
+	$html .= '<h3>' . __( 'This page will display and allow you to edit your proxycheck.io whitelist.', 'proxy-vpn-blocker' ) . '</h3>' . "\n";
+	$html .= '<h3>' . __( 'If you need an API Key they are free for up to 1000 daily queries, paid plans are available with more.', 'proxy-vpn-blocker' ) . '</h3>' . "\n";
+	$html .= '</div>' . "\n";
+	$html .= '</div>' . "\n";
+	$html .= '</div>';
+	echo wp_kses( $html, $allowed_html );
 }

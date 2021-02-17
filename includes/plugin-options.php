@@ -80,6 +80,9 @@ class Proxy_VPN_Blocker_Settings {
 		add_submenu_page( $this->parent->_token . '_settings', 'Blacklist Editor', 'Blacklist Editor', 'manage_options', $this->parent->_token . '_blacklist', array( $this, 'ipblacklist_page' ) );
 		add_submenu_page( $this->parent->_token . '_settings', 'Whitelist Editor', 'Whitelist Editor', 'manage_options', $this->parent->_token . '_whitelist', array( $this, 'ipwhitelist_page' ) );
 		add_submenu_page( $this->parent->_token . '_settings', 'Statistics', 'API Key Statistics', 'manage_options', $this->parent->_token . '_statistics', array( $this, 'statistics_page' ) );
+		if ( 'on' === get_option( 'pvb_enable_debugging' ) ) {
+			add_submenu_page( $this->parent->_token . '_settings', 'PVB Debugging', 'PVB Debugging', 'manage_options', $this->parent->_token . '_debugging', array( $this, 'debugging_page' ) );
+		}
 	}
 
 	/**
@@ -176,7 +179,7 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_blocked_select_pages_field',
 					'label'       => __( 'Restrict on Specific Pages', 'proxy-vpn-blocker' ),
-					'description' => __( 'You can block on specific pages by adding them in this list. Try typing to search...<p class="note"><i class="fas fa-exclamation-circle"></i> Selecting a page here WILL turn off \'Block on All Pages\' option.</p><p class="note"><i class="fas fa-exclamation-circle"></i> Using this with a Cache Plugin may not work unless you set your Cache Plugin to not cache these pages.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'You can block on specific pages by adding them in this list. Try typing to search...<p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> Selecting a page here WILL turn off \'Block on All Pages\' option.</p><p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> Using this with a Cache Plugin may not work unless you set your Cache Plugin to not cache these pages.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'select_pages_multi',
 					'options'     => $pages_array,
 					'placeholder' => __( 'Select a list of pages...', 'proxy-vpn-blocker' ),
@@ -184,7 +187,7 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_blocked_select_posts_field',
 					'label'       => __( 'Restrict on Specific Posts', 'proxy-vpn-blocker' ),
-					'description' => __( 'You can block on specific postss by adding them in this list. Try typing to search...<p class="note"><i class="fas fa-exclamation-circle"></i> Selecting a post here WILL turn off \'Block on All Pages\' option.</p><p class="note"><i class="fas fa-exclamation-circle"></i> Using this with a Cache Plugin may not work unless you set your Cache Plugin to not cache these posts.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'You can block on specific postss by adding them in this list. Try typing to search...<p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> Selecting a post here WILL turn off \'Block on All Pages\' option.</p><p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> Using this with a Cache Plugin may not work unless you set your Cache Plugin to not cache these posts.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'select_pages_multi',
 					'options'     => $posts_array,
 					'placeholder' => __( 'Select a list of posts...', 'proxy-vpn-blocker' ),
@@ -206,7 +209,7 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_custom_blocked_page',
 					'label'       => __( 'Custom Blocked Page', 'proxy-vpn-blocker' ),
-					'description' => __( 'You can select a page to use as the blocked page from this list. <p class="note"><i class="fas fa-exclamation-circle"></i> You cannot select a page here that already exists in your "Restrict on Specific Pages" List.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'You can select a page to use as the blocked page from this list. <p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> You cannot select a page here that already exists in your "Restrict on Specific Pages" List.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'select_page_single',
 					'options'     => $custom_page_array,
 					'placeholder' => __( 'Select a specific page...', 'proxy-vpn-blocker' ),
@@ -214,7 +217,7 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_redirect_bad_visitor',
 					'label'       => __( 'Redirect to URL', 'proxy-vpn-blocker' ),
-					'description' => __( 'Set this to \'on\' to enable redirection of detected bad visitors to a set URL in the below box <p class="note"><i class="fas fa-exclamation-circle"></i> Turning this on will disable a set custom block page above, you cannot use both.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'Set this to \'on\' to enable redirection of detected bad visitors to a set URL in the below box <p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> Turning this on will disable a set custom block page above, you cannot use both.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'checkbox',
 					'default'     => '',
 				),
@@ -235,7 +238,7 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_risk_select_box',
 					'label'       => __( 'Risk Score Checking', 'proxy-vpn-blocker' ),
-					'description' => __( 'Set this to \'on\' to enable the proxycheck.io Risk Score feature. <p class="note"><i class="fas fa-exclamation-circle"></i> When using this feature your proxycheck.io positive detection log may not reflect what has actually been blocked by this plugin because they would still be positively detected, but the action will be taken by Proxy & VPN Blocker based on the IP Risk Score.</p><p class="note"><i class="fas fa-exclamation-circle"></i>  IP\'s allowed through with the risk score feature are not cached as Known Good IP\'s.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'Set this to \'on\' to enable the proxycheck.io Risk Score feature. <p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> When using this feature your proxycheck.io positive detection log may not reflect what has actually been blocked by this plugin because they would still be positively detected, but the action will be taken by Proxy & VPN Blocker based on the IP Risk Score.</p><p class="note"><i class="pvb-fa-icon-exclamation-circle"></i>  IP\'s allowed through with the risk score feature are not cached as Known Good IP\'s.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'checkbox',
 					'default'     => '',
 				),
@@ -264,7 +267,7 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_blocked_countries_field',
 					'label'       => __( 'Country/Continent', 'proxy-vpn-blocker' ),
-					'description' => __( 'You can block specific Countries & Continents by adding them in this list. You can opt to make this a Whitelist below and then only the selected Countries/Continents will be allowed through. <p class="note"><i class="fas fa-exclamation-circle"></i> This is not affected by IP Risk Score Checking options.</p><p class="note"><i class="fas fa-exclamation-circle"></i> IP\'s that are not detected as bad by the proxycheck.io API but are blocked due to your settings here will not show up in your detections log. If you require this information then it is recommended that you use the Rules Feature of proxycheck.io instead of this.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'You can block specific Countries & Continents by adding them in this list. You can opt to make this a Whitelist below and then only the selected Countries/Continents will be allowed through. <p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> This is not affected by IP Risk Score Checking options.</p><p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> IP\'s that are not detected as bad by the proxycheck.io API but are blocked due to your settings here will not show up in your detections log. If you require this information then it is recommended that you use the Rules Feature of proxycheck.io instead of this.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'select_country_multi',
 					'options'     => array(
 						'Africa'                           => 'Africa',
@@ -530,7 +533,7 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_whitelist_countries_select_box',
 					'label'       => __( 'Treat Country/Continent List as a Whitelist', 'proxy-vpn-blocker' ),
-					'description' => __( 'If this is turned \'on\' then the Countries/Continents selected above will be Whitelisted instead of Blacklisted, all other countries will be blocked. <p class="warning"><i class="fas fa-exclamation-triangle"></i> This Could Be Your Own Country/Continent! You would have to add your own Country or Continent or you WILL get blocked from logging in. Please see the FAQ for instructions on how to fix this if it happens!</p><p class="note"><i class="fas fa-exclamation-circle"></i> Bad IP\'s from whitelisted Countries/Continents will still be blocked!</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'If this is turned \'on\' then the Countries/Continents selected above will be Whitelisted instead of Blacklisted, all other countries will be blocked. <p class="warning"><i class="pvb-fa-icon-exclamation-triangle"></i> This Could Be Your Own Country/Continent! You would have to add your own Country or Continent or you WILL get blocked from logging in. Please see the FAQ for instructions on how to fix this if it happens!</p><p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> This will not turn on if your country list above is empty!</p><p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> Bad IP\'s from whitelisted Countries/Continents will still be blocked!</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'checkbox',
 					'default'     => '',
 				),
@@ -543,7 +546,7 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_Custom_TAG_field',
 					'label'       => __( 'Custom Tag', 'proxy-vpn-blocker' ),
-					'description' => __( 'By default the tag used is siteurl.com/path/to/page-accessed, however you can supply your own descriptive tag. return to default by leaving this empty. <p class="note"><i class="fas fa-exclamation-circle"></i> You can enter \'0\' in this box to disable tagging completely if you want queries to be private.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'By default the tag used is siteurl.com/path/to/page-accessed, however you can supply your own descriptive tag. return to default by leaving this empty. <p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> You can enter \'0\' in this box to disable tagging completely if you want queries to be private.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'text',
 					'default'     => '',
 					'placeholder' => __( 'Custom Tag', 'proxy-vpn-blocker' ),
@@ -551,7 +554,7 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_good_ip_cache_time',
 					'label'       => __( 'Known Good IP Cache', 'proxy-vpn-blocker' ),
-					'description' => __( 'Known Good IP\'s are cached after the first time they are checked to save on queries to the proxycheck.io API, you can set this to between ten and 240 mins (4hrs) - Default cache time is 30 minutes.', 'proxy-vpn-blocker' ),
+					'description' => __( 'Known Good IP\'s are cached after the first time they are checked to save on queries to the proxycheck.io API, you can set this to between 0 and 240 mins (4hrs) - Default cache time is 30 minutes.', 'proxy-vpn-blocker' ),
 					'type'        => 'textslider-good-ip-cache-time',
 					'default'     => '30',
 					'placeholder' => __( '30', 'proxy-vpn-blocker' ),
@@ -567,7 +570,7 @@ class Proxy_VPN_Blocker_Settings {
 				array(
 					'id'          => 'proxycheckio_all_pages_activation',
 					'label'       => __( 'Block on entire site', 'proxy-vpn-blocker' ),
-					'description' => __( 'Set this to \'on\' to block Proxies/VPN\'s on every page of your website. This is at the expense of higher query usage and is NOT generally recommended.<p class="note"><i class="fas fa-exclamation-circle"></i> This will not work if you are using a caching plugin. This will also not turn on if you have any pages and/or posts selected on the "Restrict Posts/Pages" Tab. Please see FAQ.</p>', 'proxy-vpn-blocker' ),
+					'description' => __( 'Set this to \'on\' to block Proxies/VPN\'s on every page of your website. This is at the expense of higher query usage and is NOT generally recommended.<p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> This will not work if you are using a caching plugin. This will also not turn on if you have any pages and/or posts selected on the "Restrict Posts/Pages" Tab. Please see FAQ.</p>', 'proxy-vpn-blocker' ),
 					'type'        => 'checkbox',
 					'default'     => '',
 				),
@@ -584,6 +587,13 @@ class Proxy_VPN_Blocker_Settings {
 					'description' => 'Each time the settings are saved, A unique ID is also saved, this ensures that previously cached "Known Good" IP\'s are re-checked under the new settings, instead of waiting until the cache for that IP expires.',
 					'placeholder' => '',
 					'type'        => 'hidden_key_field',
+				),
+				array(
+					'id'          => 'enable_debugging',
+					'label'       => 'Proxy & VPN Blocker Debugging (Experimental)',
+					'description' => __( 'Enables the Proxy & VPN Blocker Debugging tab (Experimental), this option is for diagnostics information if you are having problems and require support.', 'proxy-vpn-blocker' ),
+					'type'        => 'checkbox',
+					'default'     => '',
 				),
 			),
 		);
@@ -751,7 +761,7 @@ class Proxy_VPN_Blocker_Settings {
 			$html .= '		<p>Thank you for your support!</p>' . "\n";
 			$html .= '	</div>' . "\n";
 			$html .= '	<div class="pvbdonationright">' . "\n";
-			$html .= '		<button class="pvbdonatedismiss" id="pvbdonationclosebutton" title="close"><i class="fas fa-times-circle"></i></button>' . "\n";
+			$html .= '		<button class="pvbdonatedismiss" id="pvbdonationclosebutton" title="close"><i class="pvb-fa-icon-times-circle"></i></button>' . "\n";
 			$html .= '		<div class="pvbdonationbutton">' . "\n";
 			$html .= '			<a href="https://pvb.ricksterm.net/plan-donate/" target="_blank"><button class="pvbdonate">Check Plan Pricing</button></a>' . "\n";
 			$html .= '		</div>' . "\n";
@@ -766,7 +776,7 @@ class Proxy_VPN_Blocker_Settings {
 				$html .= '		</div>' . "\n";
 				$html .= '	</div>' . "\n";
 				$html .= '	<div class="pvbinfowrapright">' . "\n";
-				$html .= '		<button class="pvbinfodismiss" id="pvbinfoclosebutton" title="close"><i class="fas fa-times-circle"></i></button>' . "\n";
+				$html .= '		<button class="pvbinfodismiss" id="pvbinfoclosebutton" title="close"><i class="pvb-fa-icon-times-circle"></i></button>' . "\n";
 				$html .= '		<div class="pvbinfowraptext">' . "\n";
 				$html .= '			<h1>' . __( 'Welcome to Proxy &amp; VPN Blocker', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
 				$html .= '			<p>' . __( 'Without an API Key you don\'t have access to statistics and most features of <a href="https://proxycheck.io" target="_blank">proxycheck.io</a>. You are also limited to 100 daily queries.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
@@ -781,11 +791,11 @@ class Proxy_VPN_Blocker_Settings {
 		$html .= '	<input type="checkbox" id="checkbox" />' . "\n";
 		$html .= '	<label for="checkbox">' . "\n";
 		$html .= '  	<ul class="menu first">' . "\n";
-		$html .= '			<li><a href="https://pvb.ricksterm.net" target="_blank"><i class="fas fa-external-link-alt"></i> PVB Website</a></li>' . "\n";
-		$html .= '			<li><a href="https://wordpress.org/support/plugin/proxy-vpn-blocker/" target="_blank"><i class="fab fa-wordpress"></i> Support & Issues</a></li>' . "\n";
-		$html .= '			<li><a href="https://pvb.ricksterm.net/installationandconfiguration/" target="_blank"><i class="far fa-question-circle"></i> Configuration Guide</a></li>' . "\n";
-		$html .= '			<li><a href="https://pvb.ricksterm.net/faq/" target="_blank"><i class="far fa-file-alt"></i> FAQ</a></li>' . "\n";
-		$html .= '			<li id="donate"><a href="https://pvb.ricksterm.net/donate/" target="_blank"><i class="fas fa-donate"></i> Donate</a></li>' . "\n";
+		$html .= '			<li><a href="https://pvb.ricksterm.net" target="_blank"><i class="pvb-fa-icon-external-link"></i> PVB Website</a></li>' . "\n";
+		$html .= '			<li><a href="https://wordpress.org/support/plugin/proxy-vpn-blocker/" target="_blank"><i class="pvb-fa-icon-wordpress"></i> Support & Issues</a></li>' . "\n";
+		$html .= '			<li><a href="https://pvb.ricksterm.net/installationandconfiguration/" target="_blank"><i class="pvb-fa-icon-question-circle-o"></i> Configuration Guide</a></li>' . "\n";
+		$html .= '			<li><a href="https://pvb.ricksterm.net/faq/" target="_blank"><i class="pvb-fa-icon-file-text-o"></i> FAQ</a></li>' . "\n";
+		$html .= '			<li id="donate"><a href="https://pvb.ricksterm.net/donate/" target="_blank"><i class="pvb-fa-icon-smile-o"></i> Donate</a></li>' . "\n";
 		$html .= ' 	 	</ul>' . "\n";
 		$html .= '	  <span class="toggle"><i class="fas fa-bars"></i></span>' . "\n";
 		$html .= '	</label>' . "\n";
@@ -827,6 +837,15 @@ class Proxy_VPN_Blocker_Settings {
 	 */
 	public function ipwhitelist_page() {
 		include_once 'proxycheckio-whitelist.php';
+	}
+
+	/**
+	 * Load debugging page.
+	 *
+	 * @return void
+	 */
+	public function debugging_page() {
+		include_once 'dbg/debugging.php';
 	}
 
 	/**

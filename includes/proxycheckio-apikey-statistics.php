@@ -226,8 +226,8 @@ if ( ! empty( $get_api_key ) ) {
 		$html .= '		<input type="hidden" id="api_key" name="api_key" value="' . $get_api_key . '">' . "\n";
 		$html .= '		<input type="hidden" id="page_number" name="page_number" value="0">' . "\n";
 		$html .= '		<div class="fancy-bottom">' . "\n";
-		$html .= '			<button class="pvbdefault" style="float: right;" onclick="decrementValue()" type="submit">View Newer Entries <i class="fas fa-angle-double-right"></i></button>' . "\n";
-		$html .= '			<button class="pvbdefault"  onclick="incrementValue()" type="submit"><i class="fas fa-angle-double-left"></i> View Older Entries</button>' . "\n";
+		$html .= '			<button class="pvbdefault" style="float: right;" onclick="decrementValue()" type="submit">View Newer Entries <i class="pvb-fa-icon-angle-double-right"></i></button>' . "\n";
+		$html .= '			<button class="pvbdefault"  onclick="incrementValue()" type="submit"><i class="pvb-fa-icon-angle-double-left"></i> View Older Entries</button>' . "\n";
 		$html .= '		</div>' . "\n";
 		$html .= '	</form>' . "\n";
 		$html .= '</div>' . "\n";

@@ -11,7 +11,7 @@
  * Plugin Name: Proxy & VPN Blocker
  * Plugin URI: https://pvb.ricksterm.net
  * description: Proxy & VPN Blocker. This plugin will prevent Proxies and VPN's accessing your site's login page or making comments on pages & posts using the Proxycheck.io API
- * Version: 1.8.0
+ * Version: 1.8.2
  * Author: RickstermUK
  * Author URI: https://profiles.wordpress.org/rickstermuk
  * License: GPLv2
@@ -20,8 +20,8 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-$version     = '1.8.0';
-$update_date = 'February 9th 2021';
+$version     = '1.8.2';
+$update_date = 'February 16th 2021';
 
 if ( version_compare( get_option( 'proxy_vpn_blocker_version' ), $version, '<' ) ) {
 	update_option( 'proxy_vpn_blocker_version', $version );
@@ -130,7 +130,7 @@ function pvb_general_check() {
 		if ( 'yes' === $proxycheck_answer[0] ) {
 			// Check if Risk Score Checking is on.
 			if ( 'on' === get_option( 'pvb_proxycheckio_risk_select_box' ) ) {
-				// Check if proxycheck answer array key 4 is set and is NOT VPN.
+				// Check if proxycheck answer array key 4 is set and is NOT type VPN or RULE.
 				if ( 'VPN' !== $proxycheck_answer[4] ) {
 					// Check if proxycheck answer array key 4 for risk score and compare it to the set proxy risk score.
 					if ( $proxycheck_answer[3] >= get_option( 'pvb_proxycheckio_max_riskscore_proxy' ) ) {
@@ -149,19 +149,26 @@ function pvb_general_check() {
 		} elseif ( 1 === $perform_country_check ) {
 			if ( '' === get_option( 'pvb_proxycheckio_whitelist_countries_select_box' ) ) {
 				// Block Countries in Country Block List. Allow all others.
-				if ( in_array( $proxycheck_answer[1], $countries, true ) || in_array( $proxycheck_answer[2], $countries, true ) ) {
-					pvb_block_deny();
+				if ( 'null' !== $proxycheck_answer[1] && 'null' !== $proxycheck_answer[2] ) {
+					if ( in_array( $proxycheck_answer[1], $countries, true ) || in_array( $proxycheck_answer[2], $countries, true ) ) {
+						pvb_block_deny();
+					} else {
+						set_transient( 'pvb_' . get_option( 'pvb_proxycheckio_current_key' ) . '_' . $visitor_ip_address, time() + 1800 . '-' . 0, 60 * get_option( 'pvb_proxycheckio_good_ip_cache_time' ) );
+					}
 				}
-			} elseif ( 'on' === get_option( 'pvb_proxycheckio_whitelist_countries_select_box' ) ) {
+			}
+			if ( 'on' === get_option( 'pvb_proxycheckio_whitelist_countries_select_box' ) ) {
 				// Allow Countries through if listed if this is to be treated as a whitelist. Block all other countries.
-				if ( in_array( $proxycheck_answer[1], $countries, true ) || in_array( $proxycheck_answer[2], $countries, true ) ) {
-					set_transient( 'pvb_' . get_option( 'pvb_proxycheckio_current_key' ) . '_' . $visitor_ip_address, time() + 1800 . '-' . 0, 60 * get_option( 'pvb_proxycheckio_good_ip_cache_time' ) );
-				} else {
-					pvb_block_deny();
+				if ( 'null' !== $proxycheck_answer[1] && 'null' !== $proxycheck_answer[2] ) {
+					if ( in_array( $proxycheck_answer[1], $countries, true ) || in_array( $proxycheck_answer[2], $countries, true ) ) {
+						set_transient( 'pvb_' . get_option( 'pvb_proxycheckio_current_key' ) . '_' . $visitor_ip_address, time() + 1800 . '-' . 0, 60 * get_option( 'pvb_proxycheckio_good_ip_cache_time' ) );
+					} else {
+						pvb_block_deny();
+					}
 				}
 			}
 		} else {
-			// No proxy has been detected so set a transient to cache this result and then return false.
+			// No proxy has been detected so set a transient to cache this result as known good IP.
 			set_transient( 'pvb_' . get_option( 'pvb_proxycheckio_current_key' ) . '_' . $visitor_ip_address, time() + 1800 . '-' . 0, 60 * get_option( 'pvb_proxycheckio_good_ip_cache_time' ) );
 		}
 	}
@@ -298,6 +305,13 @@ if ( 'on' === get_option( 'pvb_proxycheckio_master_activation' ) ) {
 	 */
 	if ( 'on' === get_option( 'pvb_proxycheckio_all_pages_activation' ) ) {
 		add_action( 'plugins_loaded', 'pvb_all_pages_integration', 1 );
+	}
+
+	/**
+	 * Disable the Whitelist option if whitelist is empty.
+	 */
+	if ( 'on' === get_option( 'pvb_proxycheckio_whitelist_countries_select_box' ) && empty( get_option( 'pvb_proxycheckio_blocked_countries_field' ) ) ) {
+		update_option( 'pvb_proxycheckio_whitelist_countries_select_box', '' );
 	}
 
 	/**

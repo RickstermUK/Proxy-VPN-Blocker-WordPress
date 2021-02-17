@@ -22,8 +22,6 @@ function proxycheck_function( $visitor_ip, $asn_check ) {
 	$pvb_transient_exploded = explode( '-', get_transient( 'pvb_' . get_option( 'pvb_proxycheckio_current_key' ) . '_' . $visitor_ip ) );
 	if ( false === $pvb_transient_exploded[0] ) {
 		$pvb_transient_exploded[0] = 0;
-	} else {
-		$pvb_transient_exploded[0] = 1;
 	}
 
 	if ( time() >= $pvb_transient_exploded[0] ) {
@@ -68,6 +66,7 @@ function proxycheck_function( $visitor_ip, $asn_check ) {
 		} else {
 			$vpn_option = 0;
 		}
+
 		// Get checkbox value for Risk_Score.
 		if ( 'on' === get_option( 'pvb_proxycheckio_risk_select_box' ) ) {
 			$risk_option = 1;
@@ -97,7 +96,9 @@ function proxycheck_function( $visitor_ip, $asn_check ) {
 				// Set a transient so this doesn't happen too many times.
 				set_transient( 'pvb_admin_email_denied_timeout_' . $decoded_json->status, 3 * HOUR_IN_SECONDS );
 			}
-			if ( 'denied' === $decoded_json->status ) {
+
+			// If the request to proxycheck.io was denied or malformed allow the visitor.
+			if ( 'denied' === $decoded_json->status || ! isset( $decoded_json->$visitor_ip ) ) {
 				// Return.
 				$array = array(
 					'no', // Undetected.
@@ -110,88 +111,53 @@ function proxycheck_function( $visitor_ip, $asn_check ) {
 			}
 		}
 
-		// Check if the IP we're testing is a proxy server.
+		// Check if the IP we're testing is a proxy server or not according to proxycheck.io.
 		if ( 'yes' === $decoded_json->$visitor_ip->proxy ) {
-			// A proxy has been detected "1", return true and don't IP cache this.
-			if ( isset( $decoded_json->$visitor_ip->risk ) ) {
-				if ( 1 === $asn_check ) {
-					$array = array(
-						'yes', // detected.
-						$decoded_json->$visitor_ip->country,
-						$decoded_json->$visitor_ip->continent,
-						$decoded_json->$visitor_ip->risk,
-						$decoded_json->$visitor_ip->type,
-					);
-				} else {
-					$array = array(
-						'yes', // detected.
-						'null',
-						'null',
-						$decoded_json->$visitor_ip->risk,
-						$decoded_json->$visitor_ip->type,
-					);
-				}
-				return $array;
-			} else {
-				if ( 1 === $asn_check ) {
-					$array = array(
-						'yes', // detected.
-						$decoded_json->$visitor_ip->country,
-						$decoded_json->$visitor_ip->continent,
-						'null',
-						$decoded_json->$visitor_ip->type,
-					);
-				} else {
-					$array = array(
-						'yes', // detected.
-						'null',
-						'null',
-						$decoded_json->$visitor_ip->risk,
-						$decoded_json->$visitor_ip->type,
-					);
-				}
-				return $array;
-			}
+			$array = array( 'yes' );
 		} else {
-			// A proxy has not been detected but still check if country or continent is blocked, return true and don't cache this as a good IP.
-			if ( 1 === $asn_check ) {
-				$array = array(
-					'no', // undetected.
-					$decoded_json->$visitor_ip->country,
-					$decoded_json->$visitor_ip->continent,
-					'null',
-					'null',
-				);
-			} else {
-				$array = array(
-					'no', // undetected.
-					'null',
-					'null',
-					'null',
-					'null',
-				);
-			}
-			return $array;
+			$array = array( 'no' );
 		}
+
+		// Country.
+		if ( isset( $decoded_json->$visitor_ip->country ) ) {
+			$array[] = $decoded_json->$visitor_ip->country;
+		} else {
+			$array[] = 'null';
+		}
+
+		// Continent.
+		if ( isset( $decoded_json->$visitor_ip->continent ) ) {
+			$array[] = $decoded_json->$visitor_ip->continent;
+		} else {
+			$array[] = 'null';
+		}
+
+		// Risk Score.
+		if ( isset( $decoded_json->$visitor_ip->risk ) ) {
+			$array[] = $decoded_json->$visitor_ip->risk;
+		} else {
+			$array[] = 'null';
+		}
+
+		// Proxy Type.
+		if ( isset( $decoded_json->$visitor_ip->type ) ) {
+			$array[] = $decoded_json->$visitor_ip->type;
+		} else {
+			$array[] = 'null';
+		}
+
+		return $array;
+
 	} else {
-		if ( 1 === $pvb_transient_exploded[0] ) {
-			$array = array(
-				'yes', // detected.
-				'null',
-				'null',
-				'null',
-				'null',
-			);
-			return $array;
-		} else {
-			$array = array(
-				'no', // undetected.
-				'null',
-				'null',
-				'null',
-				'null',
-			);
-			return $array;
-		}
+		$array = array(
+			'no', // undetected.
+			'null',
+			'null',
+			'null',
+			'null',
+		);
+
+		return $array;
+
 	}
 }

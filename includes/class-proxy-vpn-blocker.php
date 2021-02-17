@@ -94,7 +94,7 @@ class proxy_vpn_blocker {
 	 * @since   1.0
 	 * @return  void
 	 */
-	public function __construct( $file = '', $version = '1.8.0' ) {
+	public function __construct( $file = '', $version = '1.8.2' ) {
 		$this->_version = $version;
 		$this->_token   = 'proxy_vpn_blocker';
 
@@ -112,7 +112,6 @@ class proxy_vpn_blocker {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_styles' ), 10, 1 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'pvb_scripts_footer_function' ), 10, 1 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'pvb_scripts_header_function' ), 10, 1 );
-		//add_action( 'admin_footer', array( $this, 'pvb_scripts_footer_function' ), 10, 1 );
 
 		// Load API for generic admin functions.
 		if ( is_admin() ) {
@@ -143,8 +142,6 @@ class proxy_vpn_blocker {
 			wp_enqueue_style( $this->_token . '-chosen' );
 			wp_register_style( $this->_token . '-chosen-dark', esc_url( $this->assets_url ) . 'css/chosen/chosen-dark.min.css', array(), $this->_version );
 			wp_enqueue_style( $this->_token . '-chosen-dark' );
-			wp_register_style( $this->_token . '-fontawesome', esc_url( $this->assets_url ) . 'css/fontawesome/all.min.css', array(), $this->_version );
-			wp_enqueue_style( $this->_token . '-fontawesome' );
 		}
 	} // End admin_enqueue_styles ()
 
@@ -233,7 +230,7 @@ class proxy_vpn_blocker {
 	 * @see proxy_vpn_blocker()
 	 * @return Main proxy_vpn_blocker instance
 	 */
-	public static function instance( $file = '', $version = '1.8.0' ) {
+	public static function instance( $file = '', $version = '1.8.2' ) {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self( $file, $version );
 		}

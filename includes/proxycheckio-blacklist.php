@@ -103,21 +103,21 @@ if ( ! empty( $get_api_key ) ) {
 		$html .= '				<input type="hidden" name="action" value="blacklist_add">' . "\n";
 		$html .= '				<input id="add-list-text" autocomplete="off" placeholder="IP Address, Range or ASN #optional tag" type="text" name="add" value="" required>' . "\n";
 		$html .= wp_nonce_field( 'add-ip-blacklist', 'nonce_add_ip_blacklist' ) . "\n";
-		$html .= '				<button id="add-list-button" type="submit" name="submit" value="submit" ><span><i class="fas fa-plus"></i> Add to list</span></button>' . "\n";
+		$html .= '				<button id="add-list-button" type="submit" name="submit" value="submit" ><span><i class="pvb-fa-icon-plus"></i> Add to list</span></button>' . "\n";
 		$html .= '			</form>' . "\n";
 		$html .= '		</div>' . "\n";
 		$html .= '	</div>' . "\n";
-		if ( isset( $_GET['add'] ) && 'yes' == $_GET['add'] ) {
-			$html .= '<div id="pvbshow" class="pvbsuccess"><i class="fas fa-check-circle"></i> Successfully added to your proxycheck.io Blacklist</div>' . "\n";
+		if ( isset( $_GET['add-pvb-blacklist'] ) && 'yes' === $_GET['add-pvb-blacklist'] ) {
+			$html .= '<div id="pvbshow" class="pvbsuccess"><i class="pvb-fa-icon-check-circle"></i> Successfully added to your proxycheck.io Blacklist</div>' . "\n";
 		}
-		if ( isset( $_GET['remove'] ) && 'yes' == $_GET['remove'] ) {
-			$html .= '<div id="pvbshow" class="pvbsuccess"><i class="fas fa-check-circle"></i> Successfully removed from your proxycheck.io Blacklist</div>' . "\n";
+		if ( isset( $_GET['remove-pvb-blacklist'] ) && 'yes' === $_GET['remove-pvb-blacklist'] ) {
+			$html .= '<div id="pvbshow" class="pvbsuccess"><i class="pvb-fa-icon-check-circle"></i> Successfully removed from your proxycheck.io Blacklist</div>' . "\n";
 		}
-		if ( isset( $_GET['add'] ) && 'no' == $_GET['add'] ) {
-			$html .= '<div id="pvbshow" class="pvbfail"><i class="fas fa-times-circle"></i> Failed adding to your proxycheck.io Blacklist</div>' . "\n";
+		if ( isset( $_GET['add-pvb-blacklist'] ) && 'no' === $_GET['add-pvb-blacklist'] ) {
+			$html .= '<div id="pvbshow" class="pvbfail"><i class="pvb-fa-icon-times-circle"></i> Failed adding to your proxycheck.io Blacklist</div>' . "\n";
 		}
-		if ( isset( $_GET['remove'] ) && 'no' == $_GET['remove'] ) {
-			$html .= '<div id="pvbshow" class="pvbfail"><i class="fas fa-times-circle"></i> Failed removing from your proxycheck.io Blacklist</div>' . "\n";
+		if ( isset( $_GET['remove-pvb-blacklist'] ) && 'no' === $_GET['remove-pvb-blacklist'] ) {
+			$html .= '<div id="pvbshow" class="pvbfail"><i class="pvb-fa-icon-times-circle"></i> Failed removing from your proxycheck.io Blacklist</div>' . "\n";
 		}
 		$html .= '	<form action="' . admin_url( 'admin-post.php' ) . '" method="POST" >' . "\n";
 		$html .= wp_nonce_field( 'remove-ip-blacklist', 'nonce_remove_ip_blacklist' ) . "\n";
@@ -138,7 +138,7 @@ if ( ! empty( $get_api_key ) ) {
 				}
 				$html .=  '			<div class="row">' . "\n";
 				$html .=  '				<div class="col left">' . $ip_address . '</div>' . "\n";
-				$html .=  '				<div class="col"><button type="submit" class="entrydelete" name="remove" value="' . $ip_address . '"><i class="far fa-trash-alt"></i> Delete Entry</button></div>' . "\n";
+				$html .=  '				<div class="col"><button type="submit" class="entrydelete" name="remove" value="' . $ip_address . '"><i class="pvb-fa-icon-trash"></i> Delete Entry</button></div>' . "\n";
 				$html .=  '			</div>' . "\n";
 			}
 		} else {
