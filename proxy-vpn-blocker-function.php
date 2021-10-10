@@ -11,7 +11,7 @@
  * Plugin Name: Proxy & VPN Blocker
  * Plugin URI: https://pvb.ricksterm.net
  * description: Proxy & VPN Blocker. This plugin will prevent Proxies and VPN's accessing your site's login page or making comments on pages & posts using the Proxycheck.io API
- * Version: 1.8.4
+ * Version: 1.8.5
  * Author: RickstermUK
  * Author URI: https://profiles.wordpress.org/rickstermuk
  * License: GPLv2
@@ -20,8 +20,8 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-$version     = '1.8.4';
-$update_date = 'September 7th 2021';
+$version     = '1.8.5';
+$update_date = 'September 25th 2021';
 
 if ( version_compare( get_option( 'proxy_vpn_blocker_version' ), $version, '<' ) ) {
 	update_option( 'proxy_vpn_blocker_version', $version );
@@ -59,6 +59,7 @@ function proxy_vpn_blocker() {
 }
 
 proxy_vpn_blocker();
+
 
 /**
  * Display message if disablepvb.txt file exists
@@ -99,17 +100,14 @@ function pvb_block_deny() {
 		if ( 'on' === get_option( 'pvb_proxycheckio_redirect_bad_visitor' ) ) {
 			if ( ! empty( get_option( 'pvb_proxycheckio_opt_redirect_url' ) ) ) {
 				nocache_headers();
-				// phpcs:ignore
 				wp_redirect( get_option( 'pvb_proxycheckio_opt_redirect_url' ), 302 );
 				exit;
 			} else {
 				define( 'DONOTCACHEPAGE', true ); // Do not cache this page.
-				// phpcs:ignore
 				wp_die( '<p>' . $proxycheck_denied . '</p>', $proxycheck_denied, array( 'back_link' => true ) );
 			}
 		} else {
 			define( 'DONOTCACHEPAGE', true ); // Do not cache this page.
-			// phpcs:ignore
 			wp_die( '<p>' . $proxycheck_denied . '</p>', $proxycheck_denied, array( 'back_link' => true ) );
 		}
 	}
@@ -119,13 +117,11 @@ function pvb_block_deny() {
  * Proxy & VPN Blocker General check for (pages, posts, login etc).
  */
 function pvb_general_check() {
-	// phpcs:disable
-	if ( 'on' === get_option( 'pvb_proxycheckio_CLOUDFLARE_select_box' ) && isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) {
-		$visitor_ip_address = $_SERVER['HTTP_CF_CONNECTING_IP'];
+	if ( 'on' === get_option( 'pvb_proxycheckio_CLOUDFLARE_select_box' ) && isset( $_SERVER["HTTP_CF_CONNECTING_IP"] ) ) {
+		$visitor_ip_address = $_SERVER["HTTP_CF_CONNECTING_IP"];
 	} else {
-		$visitor_ip_address = $_SERVER['REMOTE_ADDR'];
+		$visitor_ip_address = $_SERVER["REMOTE_ADDR"];
 	}
-	// phpcs:enable
 	if ( ! empty( $visitor_ip_address ) ) {
 		require_once 'proxycheckio-api-call.php';
 		$countries = get_option( 'pvb_proxycheckio_blocked_countries_field' );
@@ -187,7 +183,6 @@ function pvb_general_check() {
  */
 function pvb_standard_script() {
 	if ( ! is_file( ABSPATH . 'disablepvb.txt' ) ) {
-		// phpcs:ignore
 		$request_uri = $_SERVER['REQUEST_URI'];
 		if ( stripos( $request_uri, 'wp-cron.php' ) === false && stripos( $request_uri, 'admin-ajax.php' ) === false && current_user_can( 'administrator' ) === false ) {
 			pvb_general_check();
@@ -200,7 +195,6 @@ function pvb_standard_script() {
  */
 function pvb_select_pages_integrate() {
 	if ( ! is_file( ABSPATH . 'disablepvb.txt' ) ) {
-		// phpcs:ignore
 		$request_uri   = $_SERVER['REQUEST_URI'];
 		$blocked_pages = get_option( 'pvb_blocked_pages_array' );
 		if ( stripos( $request_uri, 'wp-cron.php' ) === false && stripos( $request_uri, 'admin-ajax.php' ) === false && current_user_can( 'administrator' ) === false ) {
@@ -220,9 +214,7 @@ function pvb_select_pages_integrate() {
  */
 function pvb_all_pages_integration() {
 	if ( ! is_file( ABSPATH . 'disablepvb.txt' ) ) {
-		// phpcs:ignore
-		$request_uri   = $_SERVER['REQUEST_URI'];
-		// phpcs:ignore
+		$request_uri = $_SERVER['REQUEST_URI'];
 		$full_url    = esc_url_raw( ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
 		if ( stripos( $request_uri, 'wp-cron.php' ) === false && stripos( $request_uri, 'admin-ajax.php' ) === false && current_user_can( 'administrator' ) === false ) {
 			$custom_block_page = get_option( 'pvb_proxycheckio_custom_blocked_page' );
@@ -242,7 +234,6 @@ function pvb_all_pages_integration() {
  */
 function pvb_select_posts_integrate() {
 	if ( ! is_file( ABSPATH . 'disablepvb.txt' ) ) {
-		// phpcs:ignore
 		$request_uri   = $_SERVER['REQUEST_URI'];
 		$blocked_posts = get_option( 'pvb_blocked_posts_array' );
 		if ( stripos( $request_uri, 'wp-cron.php' ) === false && stripos( $request_uri, 'admin-ajax.php' ) === false && current_user_can( 'administrator' ) === false ) {
@@ -391,9 +382,8 @@ function pvb_load_monthstat( $request ) {
 		} else {
 			$response_api_month = array();
 			$count_day          = 0;
-			// America/Denver Time zone is important so that the time is in sync with the API.
-			$date    = new DateTime( null, new DateTimeZone( 'America/Denver' ) );
-			$datefix = $date->add( new DateInterval( 'P1D' ) );
+			$date               = new DateTime( null, new DateTimeZone( 'America/Denver' ) );
+			$datefix            = $date->add( new DateInterval( 'P1D' ) );
 			foreach ( $api_key_stats as $key => $value ) {
 					$data                    = array();
 					$data['days']            = $datefix->modify( '-1 day' )->format( 'M jS' );

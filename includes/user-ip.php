@@ -12,13 +12,11 @@
  * @param type $user_id from user_register hook.
  */
 function pvb_user_register_ip_save( $user_id ) {
-	// phpcs:disable
 	if ( 'on' === get_option( 'pvb_proxycheckio_CLOUDFLARE_select_box' ) && isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) {
 		$visitor_ip_address = $_SERVER['HTTP_CF_CONNECTING_IP'];
 	} else {
 		$visitor_ip_address = $_SERVER['REMOTE_ADDR'];
 	}
-	// phpcs:enable
 	if ( isset( $visitor_ip_address ) ) {
 		add_user_meta( $user_id, 'registration_ip', $visitor_ip_address );
 	}
@@ -34,13 +32,11 @@ add_action( 'user_register', 'pvb_user_register_ip_save', 10, 1 );
  * @param type $user from wp_login hook.
  */
 function pvb_user_login( $user_login, $user ) {
-	// phpcs:disable
 	if ( 'on' === get_option( 'pvb_proxycheckio_CLOUDFLARE_select_box' ) && isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) {
 		$visitor_ip_address = $_SERVER['HTTP_CF_CONNECTING_IP'];
 	} else {
 		$visitor_ip_address = $_SERVER['REMOTE_ADDR'];
 	}
-	// phpcs:enable
 	if ( isset( $visitor_ip_address ) ) {
 		$last_login_ip = '';
 		if ( '' !== get_user_meta( $user->ID, 'last_login_ip', true ) ) {

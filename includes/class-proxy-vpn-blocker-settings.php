@@ -14,13 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Proxy_VPN_Blocker_Settings {
 	/**
-	 * The single instance of proxy_vpn_blocker_Settings.
+	 * The single instance of Proxy_VPN_Blocker_Settings.
 	 *
 	 * @var     object
 	 * @access  private
 	 * @since   1.0
 	 */
-	private static $instance = null;
+	private static $_instance = null;
 
 	/**
 	 * The main plugin object.
@@ -884,21 +884,20 @@ class Proxy_VPN_Blocker_Settings {
 	}
 
 	/**
-	 * Main Proxy_VPN_Blocker_Settings Instance.
+	 * Main proxy_vpn_blocker_Settings Instance.
 	 *
-	 * Ensures only one instance of Proxy_VPN_Blocker_Settings is loaded or can be loaded.
+	 * Ensures only one instance of proxy_vpn_blocker_Settings is loaded or can be loaded.
 	 *
 	 * @since 1.0
 	 * @static
 	 * @see proxy_vpn_blocker()
-	 * @param name $parent The main plugin object.
 	 * @return Main Proxy_VPN_Blocker_Settings instance
 	 */
 	public static function instance( $parent ) {
-		if ( is_null( self::$instance ) ) {
-			self::$instance = new self( $parent );
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self( $parent );
 		}
-		return self::$instance;
+		return self::$_instance;
 	} // End instance()
 
 	/**

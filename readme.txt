@@ -1,11 +1,11 @@
 === Proxy & VPN Blocker ===
 Contributors: rickstermuk
-Tags: security, proxy blocker, vpn blocker, proxy, vpn, proxycheck, anti spam, spam, anti-spam, Tor, Anti-Tor, Tor block, block proxy, country blocker, country block, IP block
+Tags: security, proxy blocker, vpn blocker, proxy, vpn, proxycheck, anti spam, spam, anti-spam, Tor, Anti-Tor, Tor block
 Donate link: https://pvb.ricksterm.net/donate
 Requires at least: 4.9
-Tested up to: 5.8
+Tested up to: 5.8.1
 Requires PHP: 5.6
-Stable tag: 1.8.4
+Stable tag: 1.8.5
 License: GPLv2
 
 Blocks Proxies, VPN's, select Countries, IP's, Ranges & ASN's accessing your site login or commenting on pages & posts using the proxycheck.io API.
@@ -26,7 +26,7 @@ Below is a list of the main blocking features supported by this plugin.
 * Caching of known good IP addresses for half an hour (configurable between ten and 240 minutes) after the first check to save on repeat queries (and slowing down good visitors).
 * Optional blocking based on IP Risk Score functionality provided by the proxycheck.io API.
 
-> Note: By default blocking happens on Login, Registration, WP-Admin area, posting comments, and pingbacks, but you can extend this to blocking on any specified page.
+> Note: By default blocking happens on Login, Registration, WP-Admin area, posting comments, and pingbacks, but you can extend this to blocking on any specified page or even on a specific Div class.
 
 = Added Extras =
 Proxy & VPN Blocker has gone much further than just providing the basic API features of proxycheck.io. It has country blocking baked right in, an API Key statistics page and proxycheck.io Whitelist and Blacklist manipulation right from your WordPress Dashboard for ease of use, providing the Dashboard API is enabled on your proxycheck.io account. This is so you can manage most things from within WordPress and don't have to log in to proxycheck.io.
@@ -94,6 +94,9 @@ Remember: If you ever have to do this, delete the disablepvb.txt file after you 
 5. Whitelist manipulation page. The blacklist page looks similar to this.
 
 == Changelog ==
+
+= 1.8.5 2021-09-24 =
+* rolled back some of the changes in the previous update that caused a display issue for the "block on selected pages/posts" UI.
 
 = 1.8.4 2021-09-07 =
 * Minor code cleanup.

@@ -477,7 +477,7 @@ if ( 'on' === get_option( 'pvb_enable_debugging' ) ) {
 	$html  = '<div class="wrap" id="' . $this->parent->_token . '_debugging">';
 	$html .= '	<h2 class="pvb-wp-notice-fix"></h2>';
 	$html .= '	<div class="pvbareawrap">';
-	$html .= '		<h1>' . __( 'Proxy & VPN Blocker Debugging Information', 'proxy-vpn-blocker' ) . '</h1>';
+	$html .= '		<h1>' . __( 'Proxy & VPN Blocker Debugging Information (Experimental)', 'proxy-vpn-blocker' ) . '</h1>';
 	$html .= '		<p>' . __( 'This section contains information that may be useful for the Proxy & VPN Blocker Developer to help diagnose problems that you may be experiencing with the Plugin.', 'proxy-vpn-blocker' ) . '</p>';
 	$html .= '		<p>' . __( 'This information has been anonymized as much as possible, but please do review the output before sending anything.', 'proxy-vpn-blocker' ) . '</p>';
 	$html .= '	</div>';
