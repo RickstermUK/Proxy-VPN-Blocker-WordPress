@@ -11,7 +11,7 @@
  * Plugin Name: Proxy & VPN Blocker
  * Plugin URI: https://pvb.ricksterm.net
  * description: Proxy & VPN Blocker. This plugin will prevent Proxies and VPN's accessing your site's login page or making comments on pages & posts using the Proxycheck.io API
- * Version: 1.8.2
+ * Version: 1.8.4
  * Author: RickstermUK
  * Author URI: https://profiles.wordpress.org/rickstermuk
  * License: GPLv2
@@ -20,8 +20,8 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-$version     = '1.8.2';
-$update_date = 'February 16th 2021';
+$version     = '1.8.4';
+$update_date = 'September 7th 2021';
 
 if ( version_compare( get_option( 'proxy_vpn_blocker_version' ), $version, '<' ) ) {
 	update_option( 'proxy_vpn_blocker_version', $version );
@@ -32,24 +32,27 @@ if ( version_compare( get_option( 'proxy_vpn_blocker_version' ), $version, '<' )
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-// Load plugin class files.
+// Load plugin class & function files.
 require_once 'includes/class-proxy-vpn-blocker.php';
-require_once 'includes/plugin-options.php';
+require_once 'includes/class-proxy-vpn-blocker-settings.php';
 require_once 'includes/custom-form-handlers.php';
+if ( 'on' === get_option( 'pvb_log_user_ip_select_box' ) ) {
+	require_once 'includes/user-ip.php';
+}
 // Load plugin libraries.
 require_once 'includes/lib/class-proxy-vpn-blocker-admin-api.php';
 
 /**
- * Returns the main instance of proxy_vpn_blocker to prevent the need to use globals.
+ * Returns the main instance of Proxy_VPN_Blocker to prevent the need to use globals.
  *
- * @return object proxy_vpn_blocker
+ * @return object Proxy_VPN_Blocker
  */
 function proxy_vpn_blocker() {
 	global $version;
-	$instance = proxy_vpn_blocker::instance( __FILE__, $version );
+	$instance = Proxy_VPN_Blocker::instance( __FILE__, $version );
 
 	if ( is_null( $instance->settings ) ) {
-		$instance->settings = proxy_vpn_blocker_Settings::instance( $instance );
+		$instance->settings = Proxy_VPN_Blocker_Settings::instance( $instance );
 	}
 
 	return $instance;
@@ -96,14 +99,17 @@ function pvb_block_deny() {
 		if ( 'on' === get_option( 'pvb_proxycheckio_redirect_bad_visitor' ) ) {
 			if ( ! empty( get_option( 'pvb_proxycheckio_opt_redirect_url' ) ) ) {
 				nocache_headers();
+				// phpcs:ignore
 				wp_redirect( get_option( 'pvb_proxycheckio_opt_redirect_url' ), 302 );
 				exit;
 			} else {
 				define( 'DONOTCACHEPAGE', true ); // Do not cache this page.
+				// phpcs:ignore
 				wp_die( '<p>' . $proxycheck_denied . '</p>', $proxycheck_denied, array( 'back_link' => true ) );
 			}
 		} else {
 			define( 'DONOTCACHEPAGE', true ); // Do not cache this page.
+			// phpcs:ignore
 			wp_die( '<p>' . $proxycheck_denied . '</p>', $proxycheck_denied, array( 'back_link' => true ) );
 		}
 	}
@@ -113,11 +119,13 @@ function pvb_block_deny() {
  * Proxy & VPN Blocker General check for (pages, posts, login etc).
  */
 function pvb_general_check() {
-	if ( 'on' === get_option( 'pvb_proxycheckio_CLOUDFLARE_select_box' ) && isset( $_SERVER["HTTP_CF_CONNECTING_IP"] ) ) {
-		$visitor_ip_address = $_SERVER["HTTP_CF_CONNECTING_IP"];
+	// phpcs:disable
+	if ( 'on' === get_option( 'pvb_proxycheckio_CLOUDFLARE_select_box' ) && isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) {
+		$visitor_ip_address = $_SERVER['HTTP_CF_CONNECTING_IP'];
 	} else {
-		$visitor_ip_address = $_SERVER["REMOTE_ADDR"];
+		$visitor_ip_address = $_SERVER['REMOTE_ADDR'];
 	}
+	// phpcs:enable
 	if ( ! empty( $visitor_ip_address ) ) {
 		require_once 'proxycheckio-api-call.php';
 		$countries = get_option( 'pvb_proxycheckio_blocked_countries_field' );
@@ -179,6 +187,7 @@ function pvb_general_check() {
  */
 function pvb_standard_script() {
 	if ( ! is_file( ABSPATH . 'disablepvb.txt' ) ) {
+		// phpcs:ignore
 		$request_uri = $_SERVER['REQUEST_URI'];
 		if ( stripos( $request_uri, 'wp-cron.php' ) === false && stripos( $request_uri, 'admin-ajax.php' ) === false && current_user_can( 'administrator' ) === false ) {
 			pvb_general_check();
@@ -191,6 +200,7 @@ function pvb_standard_script() {
  */
 function pvb_select_pages_integrate() {
 	if ( ! is_file( ABSPATH . 'disablepvb.txt' ) ) {
+		// phpcs:ignore
 		$request_uri   = $_SERVER['REQUEST_URI'];
 		$blocked_pages = get_option( 'pvb_blocked_pages_array' );
 		if ( stripos( $request_uri, 'wp-cron.php' ) === false && stripos( $request_uri, 'admin-ajax.php' ) === false && current_user_can( 'administrator' ) === false ) {
@@ -210,7 +220,9 @@ function pvb_select_pages_integrate() {
  */
 function pvb_all_pages_integration() {
 	if ( ! is_file( ABSPATH . 'disablepvb.txt' ) ) {
-		$request_uri = $_SERVER['REQUEST_URI'];
+		// phpcs:ignore
+		$request_uri   = $_SERVER['REQUEST_URI'];
+		// phpcs:ignore
 		$full_url    = esc_url_raw( ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
 		if ( stripos( $request_uri, 'wp-cron.php' ) === false && stripos( $request_uri, 'admin-ajax.php' ) === false && current_user_can( 'administrator' ) === false ) {
 			$custom_block_page = get_option( 'pvb_proxycheckio_custom_blocked_page' );
@@ -230,6 +242,7 @@ function pvb_all_pages_integration() {
  */
 function pvb_select_posts_integrate() {
 	if ( ! is_file( ABSPATH . 'disablepvb.txt' ) ) {
+		// phpcs:ignore
 		$request_uri   = $_SERVER['REQUEST_URI'];
 		$blocked_posts = get_option( 'pvb_blocked_posts_array' );
 		if ( stripos( $request_uri, 'wp-cron.php' ) === false && stripos( $request_uri, 'admin-ajax.php' ) === false && current_user_can( 'administrator' ) === false ) {
@@ -275,8 +288,10 @@ if ( 'on' === get_option( 'pvb_proxycheckio_master_activation' ) ) {
 	/**
 	 * WordPress Auth protection and comments protection.
 	 */
-	add_filter( 'authenticate', 'pvb_standard_script', 1 );
-	add_filter( 'login_head', 'pvb_standard_script', 1 );
+	if ( 'on' === get_option( 'pvb_protect_login_authentication' ) ) {
+		add_filter( 'authenticate', 'pvb_standard_script', 1 );
+		add_filter( 'login_head', 'pvb_standard_script', 1 );
+	}
 	add_action( 'pre_comment_on_post', 'pvb_standard_script', 1 );
 	add_action( 'wp_loaded', 'process_permalinks', 1 );
 
@@ -327,7 +342,7 @@ if ( 'on' === get_option( 'pvb_proxycheckio_master_activation' ) ) {
  */
 function upgrade_pvb_db() {
 	$database_version = get_option( 'pvb_db_version' );
-	$current_version  = '2.0.1';
+	$current_version  = '3.0.0';
 	if ( $current_version !== $database_version ) {
 		require_once 'pvb-db-upgrade.php';
 	}
@@ -376,8 +391,9 @@ function pvb_load_monthstat( $request ) {
 		} else {
 			$response_api_month = array();
 			$count_day          = 0;
-			$date               = new DateTime( null, new DateTimeZone( 'America/Denver' ) );
-			$datefix            = $date->add( new DateInterval( 'P1D' ) );
+			// America/Denver Time zone is important so that the time is in sync with the API.
+			$date    = new DateTime( null, new DateTimeZone( 'America/Denver' ) );
+			$datefix = $date->add( new DateInterval( 'P1D' ) );
 			foreach ( $api_key_stats as $key => $value ) {
 					$data                    = array();
 					$data['days']            = $datefix->modify( '-1 day' )->format( 'M jS' );

@@ -1,10 +1,19 @@
 <?php
+/**
+ * The Proxy & VPN Blocker Admin API.
+ *
+ * @package Proxy & VPN Blocker
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class proxy_vpn_blocker_Admin_API {
+/**
+ * Proxy & VPN Admin API Class.
+ */
+class Proxy_VPN_Blocker_Admin_API {
+	//phpcs:ignore
 	/**
 	 * Generate HTML for displaying fields.
 	 */
@@ -129,7 +138,7 @@ class proxy_vpn_blocker_Admin_API {
 			case 'checkbox_multi':
 				foreach ( $field['options'] as $k => $v ) {
 					$checked = false;
-					if ( in_array( $k, (array) $data ) ) {
+					if ( in_array( $k, (array) $data, true ) ) {
 						$checked = true;
 					}
 					$html .= '<label for="' . esc_attr( $field['id'] . '_' . $k ) . '" class="checkbox_multi"><input type="checkbox" ' . checked( $checked, true, false ) . ' name="' . esc_attr( $option_name ) . '[]" value="' . esc_attr( $k ) . '" id="' . esc_attr( $field['id'] . '_' . $k ) . '" /> ' . $v . '</label> ';
@@ -162,7 +171,7 @@ class proxy_vpn_blocker_Admin_API {
 				$html .= '<select name="' . esc_attr( $option_name ) . '[]" id="' . esc_attr( $field['id'] ) . '" multiple="multiple">';
 				foreach ( $field['options'] as $k => $v ) {
 					$selected = false;
-					if ( in_array( $k, (array) $data ) ) {
+					if ( in_array( $k, (array) $data, true ) ) {
 						$selected = true;
 					}
 					$html .= '<option ' . selected( $selected, true, false ) . ' value="' . esc_attr( $k ) . '">' . $v . '</option>';
@@ -174,7 +183,7 @@ class proxy_vpn_blocker_Admin_API {
 				$html .= '<select class="chosen-select form-control" data-placeholder="' . esc_attr( $field['placeholder'] ) . '" name="' . esc_attr( $option_name ) . '[]" id="' . esc_attr( $field['id'] ) . '" multiple autocomplete="off">';
 				foreach ( $field['options'] as $k => $v ) {
 					$selected = false;
-					if ( in_array( $k, (array) $data ) ) {
+					if ( in_array( $k, (array) $data, true ) ) {
 						$selected = true;
 					}
 					$html .= '<option ' . selected( $selected, true, false ) . ' value="' . esc_attr( $k ) . '">' . $v . '</option>';
@@ -186,7 +195,7 @@ class proxy_vpn_blocker_Admin_API {
 				$html .= '<select class="chosen-select form-control" data-placeholder="' . esc_attr( $field['placeholder'] ) . '" name="' . esc_attr( $option_name ) . '[]" id="' . esc_attr( $field['id'] ) . '"  autocomplete="off" multiple>';
 				foreach ( $field['options'] as $k => $v ) {
 					$selected = false;
-					if ( in_array( $k, (array) $data ) ) {
+					if ( in_array( $k, (array) $data, true ) ) {
 						$selected = true;
 					}
 					$html .= '<option ' . selected( $selected, true, false ) . ' value="' . esc_attr( $k ) . '">' . $v . '</option>';
@@ -198,7 +207,7 @@ class proxy_vpn_blocker_Admin_API {
 				$html .= '<select class="chosen-select form-control" data-placeholder="' . esc_attr( $field['placeholder'] ) . '" name="' . esc_attr( $option_name ) . '[]" id="' . esc_attr( $field['id'] ) . '" multiple autocomplete="off">';
 				foreach ( $field['options'] as $k => $v ) {
 					$selected = false;
-					if ( in_array( $k, (array) $data ) ) {
+					if ( in_array( $k, (array) $data, true ) ) {
 						$selected = true;
 					}
 					$html .= '<option ' . selected( $selected, true, false ) . ' value="' . esc_attr( $k ) . '">' . $v . '</option>';
@@ -253,6 +262,7 @@ class proxy_vpn_blocker_Admin_API {
 			return $html;
 		}
 
+		//phpcs:ignore
 		echo $html;
 
 	}
@@ -260,8 +270,8 @@ class proxy_vpn_blocker_Admin_API {
 	/**
 	 * Validate form field
 	 *
-	 * @param  string $data Submitted value
-	 * @param  string $type Type of field to validate
+	 * @param  string $data Submitted value.
+	 * @param  string $type Type of field to validate.
 	 * @return string       Validated value
 	 */
 	public function validate_field( $data = '', $type = 'text' ) {
@@ -274,6 +284,14 @@ class proxy_vpn_blocker_Admin_API {
 
 		return $data;
 	}
+
+	/**
+	 * Validate form checkboxes
+	 *
+	 * @param  string $data Submitted value.
+	 * @param  string $type Type of field to validate.
+	 * @return string       Validated value
+	 */
 	public function validate_field_checkbox( $data = '', $type = 'checkbox' ) {
 
 		switch ( $type ) {
@@ -284,6 +302,14 @@ class proxy_vpn_blocker_Admin_API {
 
 		return $data;
 	}
+
+	/**
+	 * Validate form APIKey Field
+	 *
+	 * @param  string $data Submitted value.
+	 * @param  string $type Type of field to validate.
+	 * @return string       Validated value
+	 */
 	public function validate_field_apikey( $data = '', $type = 'apikey' ) {
 
 		switch ( $type ) {
@@ -292,5 +318,6 @@ class proxy_vpn_blocker_Admin_API {
 				break;
 		}
 
+		return $data;
 	}
 }

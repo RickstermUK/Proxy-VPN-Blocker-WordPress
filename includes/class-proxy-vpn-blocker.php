@@ -1,19 +1,27 @@
 <?php
+/**
+ * The proxy & VPN Blocker main class.
+ *
+ * @package Proxy & VPN Blocker
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class proxy_vpn_blocker {
+/**
+ * Proxy & VPN Blocker.
+ */
+class Proxy_VPN_Blocker {
 
 	/**
-	 * The single instance of proxy_vpn_blocker.
+	 * The single instance of Proxy_VPN_Blocker.
 	 *
 	 * @var     object
 	 * @access  private
 	 * @since   1.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Settings class object
@@ -31,7 +39,7 @@ class proxy_vpn_blocker {
 	 * @access  public
 	 * @since   1.0
 	 */
-	public $_version;
+	public $version;
 
 	/**
 	 * The token.
@@ -40,7 +48,7 @@ class proxy_vpn_blocker {
 	 * @access  public
 	 * @since   1.0
 	 */
-	public $_token;
+	public $token;
 
 	/**
 	 * The main plugin file.
@@ -92,9 +100,11 @@ class proxy_vpn_blocker {
 	 *
 	 * @access  public
 	 * @since   1.0
+	 * @param name $file plugin environment variable.
+	 * @param name $version version number of this Plugin.
 	 * @return  void
 	 */
-	public function __construct( $file = '', $version = '1.8.2' ) {
+	public function __construct( $file = '', $version = '1.8.4' ) {
 		$this->_version = $version;
 		$this->_token   = 'proxy_vpn_blocker';
 
@@ -115,7 +125,7 @@ class proxy_vpn_blocker {
 
 		// Load API for generic admin functions.
 		if ( is_admin() ) {
-			$this->admin = new proxy_vpn_blocker_Admin_API();
+			$this->admin = new Proxy_VPN_Blocker_Admin_API();
 		}
 
 		// Handle localisation.
@@ -221,20 +231,22 @@ class proxy_vpn_blocker {
 	} //End load_Plugin_Textdomain ()
 
 	/**
-	 * Main proxy_vpn_blocker Instance
+	 * Main Proxy_VPN_Blocker Instance
 	 *
-	 * Ensures only one instance of proxy_vpn_blocker is loaded or can be loaded.
+	 * Ensures only one instance of Proxy_VPN_Blocker is loaded or can be loaded.
 	 *
 	 * @since 1.0
 	 * @static
 	 * @see proxy_vpn_blocker()
-	 * @return Main proxy_vpn_blocker instance
+	 * @param name $file plugin environment variable.
+	 * @param name $version version number of this Plugin.
+	 * @return Main Proxy_VPN_Blocker instance
 	 */
-	public static function instance( $file = '', $version = '1.8.2' ) {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $file, $version );
+	public static function instance( $file = '', $version = '1.8.4' ) {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self( $file, $version );
 		}
-		return self::$_instance;
+		return self::$instance;
 	} // End instance ()
 
 	/**
@@ -243,6 +255,7 @@ class proxy_vpn_blocker {
 	 * @since 1.0
 	 */
 	public function __clone() {
+		//phpcs:ignore
 		_doing_it_wrong( __FUNCTION__, __( 'Cloning is forbidden.' ), $this->_version );
 	} // End __clone ()
 
@@ -252,6 +265,7 @@ class proxy_vpn_blocker {
 	 * @since 1.0
 	 */
 	public function __wakeup() {
+		//phpcs:ignore
 		_doing_it_wrong( __FUNCTION__, __( 'Unserializing instances of this class is forbidden.' ), $this->_version );
 	} // End __wakeup ()
 

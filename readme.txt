@@ -1,11 +1,11 @@
 === Proxy & VPN Blocker ===
 Contributors: rickstermuk
-Tags: security, proxy blocker, vpn blocker, proxy, vpn, proxycheck, anti spam, spam, anti-spam, Tor, Anti-Tor, Tor block
+Tags: security, proxy blocker, vpn blocker, proxy, vpn, proxycheck, anti spam, spam, anti-spam, Tor, Anti-Tor, Tor block, block proxy, country blocker, country block, IP block
 Donate link: https://pvb.ricksterm.net/donate
 Requires at least: 4.9
-Tested up to: 5.6.1
+Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 1.8.2
+Stable tag: 1.8.4
 License: GPLv2
 
 Blocks Proxies, VPN's, select Countries, IP's, Ranges & ASN's accessing your site login or commenting on pages & posts using the proxycheck.io API.
@@ -17,15 +17,16 @@ Using the [proxycheck.io](https://proxycheck.io) API this plugin will prevent Pr
 = Main Blocking Features =
 Below is a list of the main blocking features supported by this plugin.
 
-* Block Proxies, SOCKS4/5, The Onion Router (TOR), Web Proxies and Compromised Servers.
+* Block Proxies, SOCKS4/4a & SOCKS5/5h, The Onion Router (TOR), Web Proxies and Compromised Servers.
 * Optionally block VPN's.
 * Support for Cloudflare.
+* Both IPv4 and IPv6 supported.
 * TLS Support for secure communication with the proxycheck.io API.
 * Block select Countries and/or Continents by selecting them in a list - optionally make this list a whitelist instead.
 * Caching of known good IP addresses for half an hour (configurable between ten and 240 minutes) after the first check to save on repeat queries (and slowing down good visitors).
 * Optional blocking based on IP Risk Score functionality provided by the proxycheck.io API.
 
-> Note: By default blocking happens on Login, Registration, WP-Admin area, posting comments, and pingbacks, but you can extend this to blocking on any specified page or even on a specific Div class.
+> Note: By default blocking happens on Login, Registration, WP-Admin area, posting comments, and pingbacks, but you can extend this to blocking on any specified page.
 
 = Added Extras =
 Proxy & VPN Blocker has gone much further than just providing the basic API features of proxycheck.io. It has country blocking baked right in, an API Key statistics page and proxycheck.io Whitelist and Blacklist manipulation right from your WordPress Dashboard for ease of use, providing the Dashboard API is enabled on your proxycheck.io account. This is so you can manage most things from within WordPress and don't have to log in to proxycheck.io.
@@ -46,6 +47,9 @@ There are paid higher query options available, Please see below how the free and
 * Paid Users with an API Key = 10,000 to 10.24 Million+ Daily Queries.
 
 You are not limited to using your API key on one site or application.
+
+= User IP Logging Feature =
+Proxy & VPN Blocker now has the ability to log User's Registration IP Address locally, with display of the IP Address next to each user in the Users list in admin and on User profile pages (viewable by Administrators). The Plugin will also log the most recent login IP address for each user, this is also displayed in the User's list and profile page (viewable by Administrators). These IP's are displayed as a link to the proxycheck.io Threats page for the IP Address.
 
 = Caching Plugin Notice =
 If your WordPress site is using a caching plugin (WP Rocket, WP Super Cache etc) Blocking on specific pages, posts or the option to block on all pages may not function due to how caching plugins work.
@@ -90,6 +94,16 @@ Remember: If you ever have to do this, delete the disablepvb.txt file after you 
 5. Whitelist manipulation page. The blacklist page looks similar to this.
 
 == Changelog ==
+
+= 1.8.4 2021-09-07 =
+* Minor code cleanup.
+* Fixed UI issue on API Key Statistics Page if API Key is not entered in settings.
+* Altered UI of API Key Statistics Page with an improved top layout and more information.
+
+= 1.8.3 2021-05-23 =
+* User Registration IP and the Most Recent Login IP is now recorded in User Meta and is displayed in the user list and user's page in Admin. If you used "Register IP's" Plugin previously, Proxy & VPN Blocker will get past user registration IP's from this for prior user registrations.
+* Added advanced options for disabling PVB protections on the default WordPress login page/authentication.
+* The Proxy & VPN Blocker settings are no longer cleared on Plugin uninstall unless you set it to clear under "Advanced" settings tab.
 
 = 1.8.2 2021-02-16 =
 * Fixed an issue that caused the Country Whitelist option to not function correctly.

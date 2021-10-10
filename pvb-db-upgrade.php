@@ -62,3 +62,10 @@ if ( $database_version >= '1.1.1' && $database_version < '2.0.1' ) {
 	}
 	update_option( 'pvb_db_version', '2.0.1' );
 }
+// Upgrade DB to 3.0.0 if lower.
+if ( $database_version >= '2.0.1' && $database_version < '3.0.0' ) {
+	add_option( 'pvb_protect_default_login_page', 'on' );
+	add_option( 'pvb_protect_comments', 'on' );
+	add_option( 'pvb_log_user_ip_select_box', 'on' );
+	update_option( 'pvb_db_version', '3.0.0' );
+}

@@ -191,6 +191,12 @@ if ( ! empty( get_option( 'proxy_vpn_blocker_version' ) ) ) {
 					<div class="col right">' . get_option( 'proxy_vpn_blocker_version' ) . '</div>
 				</div>';
 }
+if ( ! empty( get_option( 'pvb_db_version' ) ) ) {
+	$array_versions[] = '<div class="row">
+					<div class="col left"><strong>Proxy & VPN Blocker Database Version:</strong></div>
+					<div class="col right">' . get_option( 'pvb_db_version' ) . '</div>
+				</div>';
+}
 
 // Generate page/post slugs.
 if ( ! empty( get_option( 'pvb_proxycheckio_blocked_select_pages_field' ) ) ) {
@@ -453,13 +459,25 @@ if ( ! empty( get_option( 'pvb_proxycheckio_Admin_Alert_Denied_Email' ) ) ) {
 				</div>';
 }
 
+if ( ! empty( get_option( 'pvb_protect_login_authentication' ) ) ) {
+	$array_options[] = '<div class="row">
+					<div class="col left"><strong>Protect Login Authentication:</strong></div>
+					<div class="col right">on</div>
+				</div>';
+} else {
+	$array_options[] = '<div class="row">
+					<div class="col left"><strong>Protect Login Authentication:</strong></div>
+					<div class="col right">off</div>
+				</div>';
+}
+
 
 if ( 'on' === get_option( 'pvb_enable_debugging' ) ) {
 	// Build page HTML.
 	$html  = '<div class="wrap" id="' . $this->parent->_token . '_debugging">';
 	$html .= '	<h2 class="pvb-wp-notice-fix"></h2>';
 	$html .= '	<div class="pvbareawrap">';
-	$html .= '		<h1>' . __( 'Proxy & VPN Blocker Debugging Information (Experimental)', 'proxy-vpn-blocker' ) . '</h1>';
+	$html .= '		<h1>' . __( 'Proxy & VPN Blocker Debugging Information', 'proxy-vpn-blocker' ) . '</h1>';
 	$html .= '		<p>' . __( 'This section contains information that may be useful for the Proxy & VPN Blocker Developer to help diagnose problems that you may be experiencing with the Plugin.', 'proxy-vpn-blocker' ) . '</p>';
 	$html .= '		<p>' . __( 'This information has been anonymized as much as possible, but please do review the output before sending anything.', 'proxy-vpn-blocker' ) . '</p>';
 	$html .= '	</div>';

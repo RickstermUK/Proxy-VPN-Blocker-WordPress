@@ -1,6 +1,6 @@
 <?php
 /**
- * Proxy & VPN Blocker Plugin Options
+ * Proxy & VPN Blocker Plugin Settings
  *
  * @package  Proxy & VPN Blocker
  */
@@ -20,7 +20,7 @@ class Proxy_VPN_Blocker_Settings {
 	 * @access  private
 	 * @since   1.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * The main plugin object.
@@ -48,6 +48,11 @@ class Proxy_VPN_Blocker_Settings {
 	 * @since   1.0
 	 */
 	public $settings = array();
+	/**
+	 * Plugin Constructor
+	 *
+	 * @param name $parent from The main plugin object.
+	 */
 	public function __construct( $parent ) {
 		$this->parent = $parent;
 		$this->base   = 'pvb_';
@@ -169,6 +174,13 @@ class Proxy_VPN_Blocker_Settings {
 					'description' => __( 'Set this to \'on\' to also detect VPN\'s in addition to Proxies.', 'proxy-vpn-blocker' ),
 					'type'        => 'checkbox',
 					'default'     => '',
+				),
+				array(
+					'id'          => 'log_user_ip_select_box',
+					'label'       => __( 'Log User IP\'s Locally', 'proxy-vpn-blocker' ),
+					'description' => __( 'When set to on, User\'s Registration and most recent Login IP Addresses will be logged locally and displayed (with link to proxycheck.io threats page for the IP) in WordPress Users list and on User profile for administrators.', 'proxy-vpn-blocker' ),
+					'type'        => 'checkbox',
+					'default'     => 'on',
 				),
 			),
 		);
@@ -568,6 +580,13 @@ class Proxy_VPN_Blocker_Settings {
 					'placeholder' => __( '7', 'proxy-vpn-blocker' ),
 				),
 				array(
+					'id'          => 'protect_login_authentication',
+					'label'       => __( 'Protect login authentication', 'proxy-vpn-blocker' ),
+					'description' => __( 'This option blocks Proxy/VPN\'s on Login Authentication.<p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> It is not recommended to turn this off.</p>', 'proxy-vpn-blocker' ),
+					'type'        => 'checkbox',
+					'default'     => 'on',
+				),
+				array(
 					'id'          => 'proxycheckio_all_pages_activation',
 					'label'       => __( 'Block on entire site', 'proxy-vpn-blocker' ),
 					'description' => __( 'Set this to \'on\' to block Proxies/VPN\'s on every page of your website. This is at the expense of higher query usage and is NOT generally recommended.<p class="note"><i class="pvb-fa-icon-exclamation-circle"></i> This will not work if you are using a caching plugin. This will also not turn on if you have any pages and/or posts selected on the "Restrict Posts/Pages" Tab. Please see FAQ.</p>', 'proxy-vpn-blocker' ),
@@ -595,8 +614,16 @@ class Proxy_VPN_Blocker_Settings {
 					'type'        => 'checkbox',
 					'default'     => '',
 				),
+				array(
+					'id'          => 'cleanup_on_uninstall',
+					'label'       => 'Cleanup on Uninstall',
+					'description' => __( 'Cleans up all Proxy & VPN Blocker settings on plugin uninstall.', 'proxy-vpn-blocker' ),
+					'type'        => 'checkbox',
+					'default'     => '',
+				),
 			),
 		);
+		//phpcs:ignore
 		$settings = apply_filters( 'plugin_settings_fields', $settings );
 		return $settings;
 	}
@@ -646,6 +673,7 @@ class Proxy_VPN_Blocker_Settings {
 	 * @param  string $section Settings Section.
 	 */
 	public function settings_section( $section ) {
+		//phpcs:ignore
 		echo '<h3> ' . $this->settings[ $section['id'] ]['description'] . '</h3>' . "\n";
 	}
 
@@ -657,6 +685,7 @@ class Proxy_VPN_Blocker_Settings {
 	public function pvb_do_settings_sections( $page ) {
 		global $wp_settings_sections, $wp_settings_fields;
 
+		//phpcs:disable
 		if ( isset( $_GET['settings-updated'] ) ) {
 			echo '<div id="pvbshow" class="pvbsuccess">Settings Updated</div>' . "\n";
 		}
@@ -686,6 +715,7 @@ class Proxy_VPN_Blocker_Settings {
 		}
 		echo '</div>' . "\n";
 		echo '</div>' . "\n";
+		//phpcs:enable
 	}
 
 	/**
@@ -702,9 +732,10 @@ class Proxy_VPN_Blocker_Settings {
 			! isset( $wp_settings_fields[ $page ][ $section ] ) ) {
 			return;
 		}
+		//phpcs:disable
 		foreach ( (array) $wp_settings_fields[ $page ][ $section ] as $field ) {
 			echo '<div class="pvb_settingssection_container">' . "\n";
-			if ( ! empty( $field[ 'args' ]['label_for']) ) {
+			if ( ! empty( $field['args']['label_for'] ) ) {
 				echo '<div class="pvb_settingsform_row">' . "\n";
 				echo '	<div class="pvb_settingsform_left box">' . "\n";
 				echo '		<p><label for="' . $field['args']['label_for'] . '">' . $field['title'] . '</label><br />' . "\n";
@@ -712,18 +743,21 @@ class Proxy_VPN_Blocker_Settings {
 				echo '	<div class="pvb_settingsform_right">' . "\n";
 				echo '	</div>' . "\n";
 				echo '</div>' . "\n";
+				//phpcs:ignore
+				echo $html;
 			} else {
 				echo '<div class="pvb_settingsform_row">' . "\n";
 				echo '	<div class="pvb_settingsform_left box">' . "\n";
 				echo '		<h3>' . $field['title'] . '</h3>' . "\n";
 				echo '	</div>' . "\n";
 				echo '	<div class="pvb_settingsform_right">' . "\n";
-					call_user_func( $field['callback'], $field['args'] ) . "\n";
+				call_user_func( $field['callback'], $field['args'] ) . "\n";
 				echo '	</div>' . "\n";
-				echo '</div>' . "\n";
+				echo'</div>' . "\n";
 			}
 			echo '</div>' . "\n";
 		}
+		//phpcs:enable
 	}
 
 	/**
@@ -749,67 +783,68 @@ class Proxy_VPN_Blocker_Settings {
 			}
 		}
 		// Build page HTML.
-		$html  = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
-		$html .= '<h2 class="pvb-wp-notice-fix"></h2>' . "\n";
+		//phpcs:disable
+		echo '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
+		echo '<h2 class="pvb-wp-notice-fix"></h2>' . "\n";
 		if ( ! isset( $_COOKIE['pvb-hide-donate-div'] ) ) {
-			$html .= '<div class="pvbdonationsoffer" id="pvbdonationhide">' . "\n";
-			$html .= '	<div class="pvbdonationtext">' . "\n";
-			$html .= '		<h3>Proxy & VPN Blocker Donation Offer:</h3>' . "\n";
-			$html .= '		<p>Get a proxycheck.io starter or pro plan via Proxy & VPN Blocker\'s website at a 20% promotional discount. This is a donation perk and 100% of the money paid for your plan goes to the Plugin developer, while you get to enjoy the full benefits of a proxycheck.io paid plan.</p>' . "\n";
-			$html .= '		<p>Please check out Proxy & VPN Blocker\'s exclusive page which lists the discounted plan prices. We accept Paypal and various Crypto Currencies.</p>' . "\n";
-			$html .= '		<p>It is important to note that Proxy & VPN Blocker is not made by proxycheck.io and support isn\'t provided by them with configuration, or the functionality of this Plugin.</p>' . "\n";
-			$html .= '		<p>Thank you for your support!</p>' . "\n";
-			$html .= '	</div>' . "\n";
-			$html .= '	<div class="pvbdonationright">' . "\n";
-			$html .= '		<button class="pvbdonatedismiss" id="pvbdonationclosebutton" title="close"><i class="pvb-fa-icon-times-circle"></i></button>' . "\n";
-			$html .= '		<div class="pvbdonationbutton">' . "\n";
-			$html .= '			<a href="https://pvb.ricksterm.net/plan-donate/" target="_blank"><button class="pvbdonate">Check Plan Pricing</button></a>' . "\n";
-			$html .= '		</div>' . "\n";
-			$html .= '	</div>' . "\n";
-			$html .= '</div>' . "\n";
+			echo '<div class="pvbdonationsoffer" id="pvbdonationhide">' . "\n";
+			echo '	<div class="pvbdonationtext">' . "\n";
+			echo '		<h3>Proxy & VPN Blocker Donation Offer:</h3>' . "\n";
+			echo '		<p>Get a proxycheck.io starter or pro plan via Proxy & VPN Blocker\'s website at a 20% promotional discount. This is a donation perk and 100% of the money paid for your plan goes to the Plugin developer, while you get to enjoy the full benefits of a proxycheck.io paid plan.</p>' . "\n";
+			echo '		<p>Please check out Proxy & VPN Blocker\'s exclusive page which lists the discounted plan prices.</p>' . "\n";
+			echo '		<p>It is important to note that Proxy & VPN Blocker is not made by proxycheck.io and support isn\'t provided by them with configuration, or the functionality of this Plugin.</p>' . "\n";
+			echo '		<p>Thank you for your support!</p>' . "\n";
+			echo '	</div>' . "\n";
+			echo '	<div class="pvbdonationright">' . "\n";
+			echo '		<button class="pvbdonatedismiss" id="pvbdonationclosebutton" title="close"><i class="pvb-fa-icon-times-circle"></i></button>' . "\n";
+			echo '		<div class="pvbdonationbutton">' . "\n";
+			echo '			<a href="https://pvb.ricksterm.net/plan-donate/" target="_blank"><button class="pvbdonate">Check Plan Pricing</button></a>' . "\n";
+			echo '		</div>' . "\n";
+			echo '	</div>' . "\n";
+			echo '</div>' . "\n";
 		}
 		if ( empty( get_option( 'pvb_proxycheckio_API_Key_field' ) ) ) {
 			if ( ! isset( $_COOKIE['pvb-hide-info-div'] ) ) {
-				$html .= '<div class="pvbinfowrap">' . "\n";
-				$html .= '	<div class="pvbinfowrapleft">' . "\n";
-				$html .= '		<div class="pvbinfowraplogoinside">' . "\n";
-				$html .= '		</div>' . "\n";
-				$html .= '	</div>' . "\n";
-				$html .= '	<div class="pvbinfowrapright">' . "\n";
-				$html .= '		<button class="pvbinfodismiss" id="pvbinfoclosebutton" title="close"><i class="pvb-fa-icon-times-circle"></i></button>' . "\n";
-				$html .= '		<div class="pvbinfowraptext">' . "\n";
-				$html .= '			<h1>' . __( 'Welcome to Proxy &amp; VPN Blocker', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
-				$html .= '			<p>' . __( 'Without an API Key you don\'t have access to statistics and most features of <a href="https://proxycheck.io" target="_blank">proxycheck.io</a>. You are also limited to 100 daily queries.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
-				$html .= '			<p>' . __( 'It is suggested that you sign up with proxycheck.io for your free API Key which has 1,000 daily queries and full access to all features. Paid higher query tiers are also available and are recommended for large sites.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
-				$html .= '			<p>' . __( 'Please enter your proxycheck.io API key under \'Main\' to enable full functionality of Proxy &amp; VPN Blocker.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
-				$html .= '		</div>' . "\n";
-				$html .= '	</div>' . "\n";
-				$html .= '</div>' . "\n";
+				echo '<div class="pvbinfowrap">' . "\n";
+				echo '	<div class="pvbinfowrapleft">' . "\n";
+				echo '		<div class="pvbinfowraplogoinside">' . "\n";
+				echo '		</div>' . "\n";
+				echo '	</div>' . "\n";
+				echo '	<div class="pvbinfowrapright">' . "\n";
+				echo '		<button class="pvbinfodismiss" id="pvbinfoclosebutton" title="close"><i class="pvb-fa-icon-times-circle"></i></button>' . "\n";
+				echo '		<div class="pvbinfowraptext">' . "\n";
+				echo '			<h1>' . __( 'Welcome to Proxy &amp; VPN Blocker', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
+				echo '			<p>' . __( 'Without an API Key you don\'t have access to statistics and most features of <a href="https://proxycheck.io" target="_blank">proxycheck.io</a>. You are also limited to 100 daily queries.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
+				echo '			<p>' . __( 'It is suggested that you sign up with proxycheck.io for your free API Key which has 1,000 daily queries and full access to all features. Paid higher query tiers are also available and are recommended for large sites.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
+				echo '			<p>' . __( 'Please enter your proxycheck.io API key under \'Main\' to enable full functionality of Proxy &amp; VPN Blocker.', 'proxy-vpn-blocker' ) . '</p>' . "\n";
+				echo '		</div>' . "\n";
+				echo '	</div>' . "\n";
+				echo '</div>' . "\n";
 			}
 		}
-		$html .= '<nav>' . "\n";
-		$html .= '	<input type="checkbox" id="checkbox" />' . "\n";
-		$html .= '	<label for="checkbox">' . "\n";
-		$html .= '  	<ul class="menu first">' . "\n";
-		$html .= '			<li><a href="https://pvb.ricksterm.net" target="_blank"><i class="pvb-fa-icon-external-link"></i> PVB Website</a></li>' . "\n";
-		$html .= '			<li><a href="https://wordpress.org/support/plugin/proxy-vpn-blocker/" target="_blank"><i class="pvb-fa-icon-wordpress"></i> Support & Issues</a></li>' . "\n";
-		$html .= '			<li><a href="https://pvb.ricksterm.net/installationandconfiguration/" target="_blank"><i class="pvb-fa-icon-question-circle-o"></i> Configuration Guide</a></li>' . "\n";
-		$html .= '			<li><a href="https://pvb.ricksterm.net/faq/" target="_blank"><i class="pvb-fa-icon-file-text-o"></i> FAQ</a></li>' . "\n";
-		$html .= '			<li id="donate"><a href="https://pvb.ricksterm.net/donate/" target="_blank"><i class="pvb-fa-icon-smile-o"></i> Donate</a></li>' . "\n";
-		$html .= ' 	 	</ul>' . "\n";
-		$html .= '	  <span class="toggle"><i class="fas fa-bars"></i></span>' . "\n";
-		$html .= '	</label>' . "\n";
-		$html .= '</nav>' . "\n";
+		echo '<nav>' . "\n";
+		echo '	<input type="checkbox" id="checkbox" />' . "\n";
+		echo '	<label for="checkbox">' . "\n";
+		echo '  	<ul class="menu first">' . "\n";
+		echo '			<li><a href="https://pvb.ricksterm.net" target="_blank"><i class="pvb-fa-icon-external-link"></i> PVB Website</a></li>' . "\n";
+		echo '			<li><a href="https://wordpress.org/support/plugin/proxy-vpn-blocker/" target="_blank"><i class="pvb-fa-icon-wordpress"></i> Support & Issues</a></li>' . "\n";
+		echo '			<li><a href="https://pvb.ricksterm.net/installationandconfiguration/" target="_blank"><i class="pvb-fa-icon-question-circle-o"></i> Configuration Guide</a></li>' . "\n";
+		echo '			<li><a href="https://pvb.ricksterm.net/faq/" target="_blank"><i class="pvb-fa-icon-file-text-o"></i> FAQ</a></li>' . "\n";
+		echo '			<li id="donate"><a href="https://pvb.ricksterm.net/donate/" target="_blank"><i class="pvb-fa-icon-smile-o"></i> Donate</a></li>' . "\n";
+		echo ' 	 	</ul>' . "\n";
+		echo '	  <span class="toggle"><i class="fas fa-bars"></i></span>' . "\n";
+		echo '	</label>' . "\n";
+		echo '</nav>' . "\n";
 
-		$html .= '<form method="post" id="pvb-options-form" class="pvb" action="options.php" enctype="multipart/form-data">' . "\n";
+		echo '<form method="post" id="pvb-options-form" class="pvb" action="options.php" enctype="multipart/form-data">' . "\n";
 			// Get settings fields.
 			ob_start();
 			settings_fields( $this->parent->_token . '_settings' );
 			$this->pvb_do_settings_sections( $this->parent->_token . '_settings' );
-		$html .= ob_get_clean();
-		$html .= '</form>' . "\n";
-		$html .= '</div>' . "\n";
-		echo $html;
+		echo ob_get_clean();
+		echo '</form>' . "\n";
+		echo '</div>' . "\n";
+		//phpcs:enable
 	}
 
 	/**
@@ -849,20 +884,21 @@ class Proxy_VPN_Blocker_Settings {
 	}
 
 	/**
-	 * Main proxy_vpn_blocker_Settings Instance.
+	 * Main Proxy_VPN_Blocker_Settings Instance.
 	 *
-	 * Ensures only one instance of proxy_vpn_blocker_Settings is loaded or can be loaded.
+	 * Ensures only one instance of Proxy_VPN_Blocker_Settings is loaded or can be loaded.
 	 *
 	 * @since 1.0
 	 * @static
 	 * @see proxy_vpn_blocker()
-	 * @return Main proxy_vpn_blocker_Settings instance
+	 * @param name $parent The main plugin object.
+	 * @return Main Proxy_VPN_Blocker_Settings instance
 	 */
 	public static function instance( $parent ) {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $parent );
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self( $parent );
 		}
-		return self::$_instance;
+		return self::$instance;
 	} // End instance()
 
 	/**
@@ -870,6 +906,7 @@ class Proxy_VPN_Blocker_Settings {
 	 *
 	 * @since 1.0
 	 */
+	//phpcs:disable
 	public function __clone() {
 		_doing_it_wrong( __FUNCTION__, __( 'Cloning is forbidden.' ), $this->parent->_version );
 	} // End __clone()
@@ -881,4 +918,5 @@ class Proxy_VPN_Blocker_Settings {
 	public function __wakeup() {
 		_doing_it_wrong( __FUNCTION__, __( 'Unserializing instances of this class is forbidden.' ), $this->parent->_version );
 	} // End __wakeup()
+	//phpcs:enable
 }

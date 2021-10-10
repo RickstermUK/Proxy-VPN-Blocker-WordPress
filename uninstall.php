@@ -7,7 +7,7 @@
  */
 
 // If plugin is not being uninstalled, exit (do nothing).
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) && 'on' === get_option( 'pvb_cleanup_on_uninstall' ) ) {
 	exit;
 }
 
@@ -35,6 +35,7 @@ $options = array(
 	'pvb_proxycheckio_opt_redirect_url',
 	'pvb_proxycheckio_redirect_bad_visitor',
 	'pvb_proxycheckio_Admin_Alert_Denied_Email',
+	'pvb_protect_default_login_page',
 	'pvb_enable_debug',
 );
 foreach ( $options as $option ) {

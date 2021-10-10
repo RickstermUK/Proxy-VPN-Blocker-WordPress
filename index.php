@@ -1,3 +1,8 @@
 <?php
+/**
+ * Blank File.
+ *
+ * @package Proxy & VPN Blocker
+ */
 
-// Silence is golden
+// silence is golden.

@@ -57,6 +57,32 @@ $allowed_html = array(
 	'p'      => array(),
 );
 
+/**
+ * Generate Cleaner looking big numbers.
+ *
+ * @param type $n input number.
+ */
+function number_format_short( $n ) {
+	// first strip any formatting.
+	$n = ( 0 + str_replace( ',', '', $n ) );
+
+	// is this a number?
+	if ( ! is_numeric( $n ) ) {
+		return false;
+	}
+
+	// now filter it.
+	if ( $n > 1000000000000 ) {
+		return round( ( $n / 1000000000000 ), 3 ) . ' Trillion';
+	} elseif ( $n > 1000000000 ) {
+		return round( ( $n / 1000000000 ), 3 ) . ' Billion';
+	} elseif ( $n > 1000000 ) {
+		return round( ( $n / 1000000 ), 3 ) . ' Million';
+	}
+
+	return number_format( $n );
+}
+
 $get_api_key = get_option( 'pvb_proxycheckio_API_Key_field' );
 if ( ! empty( $get_api_key ) ) {
 	// Build page HTML.
@@ -69,7 +95,7 @@ if ( ! empty( $get_api_key ) ) {
 	$api_key_usage = json_decode( wp_remote_retrieve_body( $request_usage ) );
 	if ( isset( $api_key_usage->status ) && 'denied' === $api_key_usage->status ) {
 		$html  = '<div class="wrap" id="' . $this->parent->_token . '_statistics">' . "\n";
-		$html .= '<h2></h2>' . "\n";
+		$html .= '<h2></h2>';
 		$html .= '<h1>' . __( 'Proxy &amp; VPN Blocker proxycheck.io Statistics', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
 		$html .= '<div class="pvberror">' . "\n";
 		$html .= '<div class="pvberrortitle">' . __( 'Oops!', 'proxy-vpn-blocker' ) . '</div>' . "\n";
@@ -81,31 +107,89 @@ if ( ! empty( $get_api_key ) ) {
 		echo wp_kses( $html, $allowed_html );
 	} else {
 		// Format and Display usage stats.
-		$queries_today = $api_key_usage->{'Queries Today'};
-		$daily_limit   = $api_key_usage->{'Daily Limit'};
-		$queries_total = $api_key_usage->{'Queries Total'};
-		$plan_tier     = $api_key_usage->{'Plan Tier'};
-		$burst_tokens  = $api_key_usage->{'Burst Tokens Available'};
-		$html          = '<div class="wrap" id="' . $this->parent->_token . '_statistics">' . "\n";
-		$html         .= '<h2 class="pvb-wp-notice-fix"></h2>' . "\n";
-		$html         .= '<div class="pvbareawrap">' . "\n";
-		$html         .= '<h1>' . __( 'Your proxycheck.io API Key Statistics', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
-		$html         .= '<div class="pvbapidaily">';
-		$html         .= '<div class="pvbapikey">' . __( 'API Key: ', 'proxy-vpn-blocker' ) . $get_api_key . '</div>' . "\n";
-		$html         .= '<div class="pvbapitier">' . __( 'Plan: ', 'proxy-vpn-blocker' ) . $plan_tier . __( ' | ', 'proxy-vpn-blocker' ) . number_format( $daily_limit ) . __( ' Daily Queries', 'proxy-vpn-blocker' ) . '</div>' . "\n";
-		$html         .= '</div>';
-		$html         .= '<div class="pvbapiusageday">';
-		$usage_percent = ( $queries_today * 100 ) / $daily_limit;
-		if ( $usage_percent > 100 ) {
-			$usage_percent = 100;
+		$queries_today          = $api_key_usage->{'Queries Today'};
+		$daily_limit            = $api_key_usage->{'Daily Limit'};
+		$queries_total          = $api_key_usage->{'Queries Total'};
+		$plan_tier              = $api_key_usage->{'Plan Tier'};
+		$burst_tokens           = $api_key_usage->{'Burst Tokens Available'};
+		$burst_tokens_allowance = $api_key_usage->{'Burst Token Allowance'};
+		$queries_lifetime       = $api_key_usage->{'Queries Total'};
+		$bursts_used            = $burst_tokens_allowance - $burst_tokens;
+		$usage_percent          = ( $queries_today * 100 ) / $daily_limit;
+
+		// Set CSS for the color of the day's query count.
+		$query_color_id = 'query-normal';
+		if ( $usage_percent >= 75 && $usage_percent < 90 ) {
+			$query_color_id = 'query-warning';
+		} elseif ( $usage_percent >= 90 ) {
+			$query_color_id = 'query-critical';
 		}
-		$html .= 'API Key Usage Today: ' . number_format( $queries_today ) . '/' . number_format( $daily_limit ) . ' Queries - ' . round( $usage_percent, 2 ) . '% of Total.';
-		$html .= '<div class="pvbpercentbar">';
-		$html .= '<div class="pvbpercentbarinner" style="width:' . $usage_percent . '%">';
-		$html .= '</div> </div>';
-		$html .= 'Burst Tokens Available: ' . $burst_tokens . "\n";
-		$html .= '</div>';
+
+		$html  = '<div class="wrap" id="' . $this->parent->_token . '_statistics">' . "\n";
+		$html .= '<h2 class="pvb-wp-notice-fix"></h2>' . "\n";
+		$html .= '<div class="pvbareawrap">' . "\n";
+		$html .= '	<h1>' . __( 'Your proxycheck.io API Key Statistics', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
+		$html .= '	<div class="api-info-apikey">' . __( 'API Key: ', 'proxy-vpn-blocker' ) . $get_api_key . '</div>' . "\n";
+		$html .= '<div class="api-info-tier">' . __( 'Plan: ', 'proxy-vpn-blocker' ) . $plan_tier . ' | ' . number_format_short( $daily_limit ) . ' Daily Queries</div>' . "\n";
 		$html .= '</div>' . "\n";
+		$html .= '<div class="api-info">' . "\n";
+		$html .= '	<div class="api-info-col1">' . "\n";
+		$html .= '		<h1>API Queries & Burst Token Usage</h1>' . "\n";
+		$html .= '		<div class="api-query-block">' . "\n";
+		$html .= '			<div class="api-queries">' . "\n";
+		$html .= '				<div class="api-info-title-small">Queries Today:</div>' . "\n";
+		$html .= '				<div class="api-info-queries-used" id="' . $query_color_id . '"><strong> ' . number_format_short( $queries_today ) . '</strong></div>' . "\n";
+		$html .= '				<div class="api-info-title-small"> That\'s ' . round( $usage_percent, 2 ) . '% of your plan\'s daily limit. </div>' . "\n";
+		$html .= '			</div>' . "\n";
+		$html .= '			<div class="api-bursts">' . "\n";
+		$html .= '				<div class="api-info-title-small">Burst Tokens:</div>' . "\n";
+		$html .= '				<div class="api-info-bursts"><strong>' . $bursts_used . '</strong> / ' . $burst_tokens_allowance . ' Used</div>' . "\n";
+		$html .= '				<div class="api-info-title-small">Lifetime Queries:</div>' . "\n";
+		$html .= '				<div class="api-info-bursts">' . number_format_short( $queries_lifetime ) . '</div>' . "\n";
+		$html .= '			</div>' . "\n";
+		$html .= '		</div>' . "\n";
+		$html .= '	</div>' . "\n";
+		$html .= '	<div class="api-info-col2">' . "\n";
+		$html .= '		<h1>Proxy & VPN Blocker Analysis</h1>' . "\n";
+
+		if ( $usage_percent < 75 ) {
+			$html .= '<p>Proxy & VPN Blocker has determined that based on your current Query and Burst Token usage, no actions are required.</p>' . "\n";
+		} elseif ( $usage_percent >= 75 && $usage_percent < 90 ) {
+			$html .= '<p>Over <strong>75%</strong> of your Queries have been used up, today.</p>' . "\n";
+		} elseif ( $usage_percent >= 90 && $usage_percent < 100 ) {
+			$html .= '<p>Over <strong>90%</strong> of your Queries have been used up, today. You have <strong>' . $burst_tokens . '</strong> Burst Token(s) Available.</p>' . "\n";
+			if ( 0 === $burst_tokens ) {
+				$html .= '<p>It is important that you keep an eye on your query usage. You have no Burst Tokens left this month!</p>' . "\n";
+			} else {
+				$html .= '<p>It is recommended that you keep an eye on your query usage. A Burst Token may be used soon.</p>' . "\n";
+			}
+			if ( 'Paid' === $plan_tier ) {
+				$html .= '<p>If you are consistently nearing your daily limit based on the graph below, then you may need a higher tier plan</p>' . "\n";
+			} else {
+				$html .= '<p>If you are consistently nearing your daily limit based on the graph below, then you may need a paid plan.</p>' . "\n";
+			}
+			$html .= '<p>Discounted plans are available from the <a href="https://pvb.ricksterm.net/plan-donate/" target="_blank">Proxy & VPN Blocker Site</a>.</p>' . "\n";
+		} elseif ( $usage_percent > 100 && ! empty( $burst_tokens ) ) {
+			$html .= '<p>Over <strong>100%</strong> of your Queries have been used up, today. A Burst Token has been consumed, increasing your limit by 5x for today only!</p>' . "\n";
+			if ( 'Paid' === $plan_tier ) {
+				$html .= '<p>If you are consistently nearing, or hitting your daily limit based on the graph below, then you may need a higher tier plan</p>' . "\n";
+			} else {
+				$html .= '<p>If you are consistently nearing, or hitting your daily limit based on the graph below, then you may need a paid plan.</p>' . "\n";
+			}
+			$html .= '<p>Discounted plans are available from the <a href="https://pvb.ricksterm.net/plan-donate/" target="_blank">Proxy & VPN Blocker Site</a>.</p>' . "\n";
+		} elseif ( 100 === $usage_percent && empty( $burst_tokens ) ) {
+			$html .= '<p><strong>100%</strong> of your Queries have been used up, today. You have 0 Burst Tokens left this month and queries are no longer being answered until the daily reset.</p>' . "\n";
+			if ( 'Paid' === $plan_tier ) {
+				$html .= '<p>If you are consistently hitting your daily limit based on the graph below, or using Burst Tokens, then you may need a higher tier plan</p>' . "\n";
+			} else {
+				$html .= '<p>If you are consistently hitting your daily limit based on the graph below, or using Burst Tokens, then you may need a paid plan.</p>' . "\n";
+			}
+			$html .= '<p>Discounted Plans are available from the <a href="https://pvb.ricksterm.net/plan-donate/" target="_blank">Proxy & VPN Blocker Site</a>.</p>' . "\n";
+		}
+
+		$html .= '	</div>' . "\n";
+		$html .= '</div>' . "\n";
+
 		$html .= '<div class="pvbareawrap">' . "\n";
 		$html .= '<h1>' . __( 'API Key Queries: Past Month', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
 		echo wp_kses( $html, $allowed_html );
@@ -234,15 +318,13 @@ if ( ! empty( $get_api_key ) ) {
 		echo wp_kses( $html, $allowed_html );
 } else {
 	$html  = '<div class="wrap" id="' . $this->parent->_token . '_statistics">' . "\n";
-	$html .= '<div class="pvbareawrap">' . "\n";
 	$html .= '<h1>' . __( 'Proxy &amp; VPN Blocker proxycheck.io Statistics', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
 	$html .= '<div class="pvberror">' . "\n";
 	$html .= '<div class="pvberrortitle">' . __( 'Oops!', 'proxy-vpn-blocker' ) . '</div>' . "\n";
 	$html .= '<div class="pvberrorinside">' . "\n";
 	$html .= '<h2>' . __( 'Please set a <a href="https://proxycheck.io" target="_blank">proxycheck.io</a> API Key to see this page!', 'proxy-vpn-blocker' ) . '</h2>' . "\n";
 	$html .= '<h3>' . __( 'This page will display stats about your API Key queries and recent detections.', 'proxy-vpn-blocker' ) . '</h3>' . "\n";
-	$html .= '<h3>' . __( 'If you need an API Key they are free for up to 1000 daily queries, paid plans are available with more.', 'proxy-vpn-blocker' ) . '</h3>' . "\n";
-	$html .= '</div>' . "\n";
+	$html .= '<h3>' . __( 'If you need an API Key, they are free for up to 1000 daily queries, paid plans are available with more.', 'proxy-vpn-blocker' ) . '</h3>' . "\n";
 	$html .= '</div>' . "\n";
 	$html .= '</div>';
 	echo wp_kses( $html, $allowed_html );
@@ -253,6 +335,7 @@ if ( ! empty( $get_api_key ) ) {
  */
 function pagination_javascript() {
 	$get_api_key = get_option( 'pvb_proxycheckio_API_Key_field' );
+	// phpcs:disable
 	?>
 	<script type="text/javascript">
 						jQuery(document).ready(function($) {
@@ -286,7 +369,8 @@ function pagination_javascript() {
 							}
 							document.getElementById('page_number').value = value;
 						}
-					</script> 
-					<?php
+	</script>
+	<?php
+	// phpcs:enable
 }
 add_action( 'admin_footer', 'pagination_javascript' );

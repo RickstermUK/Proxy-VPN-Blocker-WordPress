@@ -1,5 +1,6 @@
 body {
     background-color: #e1ebf2 !important;
+    color: #555555;
 }
 
 /* OPTIONS PAGE */
@@ -311,13 +312,49 @@ p.warning {
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
 }
-.pvbpercentbar { 
-    background:#ffffff;
-    border:1px solid #f1f1f1;
-}
-.pvbpercentbarinner {
-    background: #44a5cd;
-}
+
+/* Top API info Columns */
+
+    #query-warning strong {
+        color: #e6da00;
+    }
+
+    #query-critical strong {
+        color: #e60000;
+    }
+
+    .api-info h1 {
+        color: #44a5cd;
+    }
+
+    .api-info h2 {
+        color: #555555;
+    }
+
+    .api-info-title-small {
+        color: #555555;
+    }
+
+    .api-info-queries-used, .api-info-queries-max, .api-info-bursts {
+        color: #555555;
+    }
+
+    .api-info-col1 {
+        border: 1px solid #c5cdd4;
+        background: #fff;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+    }
+    .api-info-col2 {
+        border: 1px solid #c5cdd4;
+        background: #fff;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+
+    }
+    .api-info-col3 {
+        border: 1px solid #c5cdd4;
+        background: #fff;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+    } 
 
 
 /* stats table and whitelist/blacklist */

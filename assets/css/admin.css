@@ -625,34 +625,96 @@ input.pvb[type=text] {
 .pvberrorinside {
 	padding: 15px;
 }
-.pvbapidaily {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 20px;
-    margin-bottom: 5px;
+
+/* Top API info Columns */
+.api-info {
+    min-width: 495px;
+    margin: -7px 0 -7px 0;
 }
-.pvbapikey {
-    font-size: 18px;
+
+.api-info-col1 {
+    flex: 65%;
+    padding: 0 5px 0 5px;
+    border-radius: 7px;
+    margin: 7px 0 7px 0;
+}
+
+.api-info-col2 {
+    flex: 35%;
+    padding: 0 5px 0 5px;
+    border-radius: 7px;
+    margin: 7px 0 7px 0;
+}
+
+@media only screen and (min-width: 640px) {
+    .api-info {
+        display: flex;
+    }
+    .api-info-col2 {
+        margin: 7px 0 7px 11px !important;
+    }
+}
+
+.api-info-apikey {
+    font-size: 16pt;
+    line-height: 16pt;
+    padding: 10px 0 5px 0;
+}
+.api-info-tier {
+    font-size: 16pt;
+    line-height: 16pt;
+}
+
+.api-info p {
+    font-size: 14pt !important;
+}
+
+.api-info h1 {
+    font-size: 20pt !important;
     font-weight: bold;
 }
-.pvbapitier {
-    font-size: 18px;
-    font-weight: bold;
-    text-align: left;
-    float: right;
+
+.api-info-title-small {
+    font-size: 16pt;
+    line-height: 16pt;
+    font-weight: bold !important;
+    padding: 5px 0 0 0;
 }
-.pvbpercentbar { 
-    height:30px;
-    margin: 5px 0 5px 0;
-	border-radius: 5px;
+
+.api-info-queries-used {
+    font-size: 47pt;
+    line-height: 47pt;
+    padding: 5px 0 15px 0;
+}
+
+.api-info-bursts {
+    font-size: 26pt;
+    line-height: 26pt;
+    padding: 5px 0 5px 0;
+}
+
+.api-query-block {
     width: 100%;
-    padding: 1px;
+    margin: 0 10px 0 0;
 }
-.pvbpercentbarinner {
-    height: 30px;
-    border-radius: 3px;
+
+.api-queries, .api-bursts {
+    width: 100%;
+    border-radius: 7px;
+}
+
+@media (min-width: 800px) {
+    .api-queries {
+        width: 64%;
+        float: left;
+        padding: 0 0 10px 0;
+    }
+
+    .api-bursts {
+        width: 35%;
+        float: right;
+        padding: 0 0 10px 0;
+    }
 }
 
 /* stats table and whitelist/blacklist */

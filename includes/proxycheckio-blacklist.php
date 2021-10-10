@@ -77,7 +77,7 @@ if ( ! empty( $get_api_key ) ) {
 	$current_blacklist = json_decode( wp_remote_retrieve_body( $request_blacklist ) );
 
 	if ( isset( $current_blacklist->status ) && 'denied' === $current_blacklist->status ) {
-		$html  = '<div class="wrap" id="' . $this->parent->_token . '_statistics">' . "\n";
+		$html  = '<div class="wrap" id="' . $this->parent->_token . '_blacklist">' . "\n";
 		$html .= '<h2></h2>' . "\n";
 		$html .= '<h1>' . __( 'proxycheck.io Blacklist Editor', 'proxy-vpn-blocker' ) . '</h1>' . "\n";
 		$html .= '<div class="pvberror">' . "\n";
@@ -107,6 +107,7 @@ if ( ! empty( $get_api_key ) ) {
 		$html .= '			</form>' . "\n";
 		$html .= '		</div>' . "\n";
 		$html .= '	</div>' . "\n";
+		// phpcs:disable
 		if ( isset( $_GET['add-pvb-blacklist'] ) && 'yes' === $_GET['add-pvb-blacklist'] ) {
 			$html .= '<div id="pvbshow" class="pvbsuccess"><i class="pvb-fa-icon-check-circle"></i> Successfully added to your proxycheck.io Blacklist</div>' . "\n";
 		}
@@ -119,6 +120,7 @@ if ( ! empty( $get_api_key ) ) {
 		if ( isset( $_GET['remove-pvb-blacklist'] ) && 'no' === $_GET['remove-pvb-blacklist'] ) {
 			$html .= '<div id="pvbshow" class="pvbfail"><i class="pvb-fa-icon-times-circle"></i> Failed removing from your proxycheck.io Blacklist</div>' . "\n";
 		}
+		// phpcs:enable
 		$html .= '	<form action="' . admin_url( 'admin-post.php' ) . '" method="POST" >' . "\n";
 		$html .= wp_nonce_field( 'remove-ip-blacklist', 'nonce_remove_ip_blacklist' ) . "\n";
 		$html .= '		<input type="hidden" name="action" value="blacklist_remove">' . "\n";
@@ -164,7 +166,7 @@ if ( ! empty( $get_api_key ) ) {
 	$html .= '<div class="pvberrorinside">' . "\n";
 	$html .= '<h2>' . __( 'Please set a <a href="https://proxycheck.io" target="_blank">proxycheck.io</a> API Key to see this page!', 'proxy-vpn-blocker' ) . '</h2>' . "\n";
 	$html .= '<h3>' . __( 'This page will display and allow you to edit your proxycheck.io blacklist.', 'proxy-vpn-blocker' ) . '</h3>' . "\n";
-	$html .= '<h3>' . __( 'If you need an API Key they are free for up to 1000 daily queries, paid plans are available with more.', 'proxy-vpn-blocker' ) . '</h3>' . "\n";
+	$html .= '<h3>' . __( 'If you need an API Key, they are free for up to 1000 daily queries, paid plans are available with more.', 'proxy-vpn-blocker' ) . '</h3>' . "\n";
 	$html .= '</div>' . "\n";
 	$html .= '</div>' . "\n";
 	$html .= '</div>';

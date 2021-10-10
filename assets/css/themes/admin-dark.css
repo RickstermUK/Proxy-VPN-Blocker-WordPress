@@ -1,6 +1,7 @@
 @media (prefers-color-scheme: dark) {
     body {
         background-color: #181e23 !important;
+        color: #8c929a;
     }
     h1 {
         color: #8c929a;
@@ -329,26 +330,47 @@
         border-right: 1px solid #111417;
         color: #8c929a;
     }
-    .pvbapidaily {
+
+    /* Top API info Columns */
+    #query-warning strong {
+        color: #878023;
+    }
+
+    #query-critical strong {
+        color: #872323;
+    }
+
+    .api-info h1 {
+        color: #44a5cd;
+    }
+
+    .api-info h2 {
         color: #8c929a;
     }
-    .pvbapiusageday {
+
+    .api-info-title-small {
         color: #8c929a;
     }
-    .pvbapikey {
+
+    .api-info-queries-used, .api-info-queries-max, .api-info-bursts {
         color: #8c929a;
     }
-    .pvbapitier {
-        color: #8c929a;
+    
+    .api-info-col1 {
+        background: #1e2931;
+        border: 1px solid #111417;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
     }
-    .pvbpercentbar { 
-        background:#191e23;
-        border:1px solid #111417;
-        color: #8c929a;
+    .api-info-col2 {
+        background: #1e2931;
+        border: 1px solid #111417;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
     }
-    .pvbpercentbarinner {
-        background: #44a5cd;
-    }
+    .api-info-col3 {
+        background: #1e2931;
+        border: 1px solid #111417;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+    } 
         
     /* stats table and whitelist/blacklist */
     #log_outer {
